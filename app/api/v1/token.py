@@ -26,9 +26,14 @@ class TokenListApi(Resource):
         if not address or len(address) == 0:
             return BadRequest("address required")
 
-        pagination = TokenOrder.query.filter(
-            TokenOrder.order_create_addr == address, TokenOrder.deleted == 0
-        ).paginate(page, per_page=size, error_out=False)
+        try:
+            pagination = TokenOrder.query.filter(
+                TokenOrder.order_create_addr == address, TokenOrder.deleted == 0
+            ).paginate(page, per_page=size, error_out=False)
+        except Exception as e:
+            print(e)
+            return InternalServerError(f"Get Token Order From Address {address} Failed")
+
         orders = list()
         for token_order in pagination.items:
             raw_trans = token_order.transactions
@@ -105,7 +110,9 @@ class TokenApi(Resource):
                     setattr(token_order, key, value)
             token_order.update()
         except Exception as error:
-            return InternalServerError(f"Token Order {id} Update Failed, Error: {error}")
+            return InternalServerError(
+                f"Token Order {id} Update Failed, Error: {error}"
+            )
         return OK(f"Token Order {id} Update Success", None)
 
     @wrap_response
