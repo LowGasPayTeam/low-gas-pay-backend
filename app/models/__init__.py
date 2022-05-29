@@ -6,29 +6,31 @@ import warnings
 import time
 from datetime import datetime
 from sqlalchemy import text
-# from sqlalchemy.dialects.mysql import BIGINT, TINYINT
-from sqlalchemy.dialects.mysql import BIGINT
 
 from ExtendRegister.db_register import db
+
+
+DELETED = 1
+UNDELETED = 0
 
 
 class BaseModel(db.Model):
 
     hidden_fields = []  # 不需要返回的字段与值
     __abstract__ = True
-    id = db.Column(
-        BIGINT(20, unsigned=True), primary_key=True, autoincrement=True, comment="id"
-    )
-    created_at = db.Column(
-        BIGINT(20, unsigned=True), default=int(time.time()), comment="创建时间(时间戳)"
-    )
-    updated_at = db.Column(
-        BIGINT(20, unsigned=True), onupdate=int(time.time()), comment="更新时间(时间戳)"
-    )
-    deleted = db.Column(BIGINT(20, unsigned=True), default=0, comment="0正常;其他:已删除")
-    # status = db.Column(
-    #     TINYINT(3, unsigned=True), server_default=text("1"), comment="状态"
+    # id = db.Column(
+    #     BIGINT(20, unsigned=True), primary_key=True, autoincrement=True, comment="id"
     # )
+    # created_at = db.Column(
+    #     db.DateTime, default=int(time.time()), comment="创建时间(时间戳)"
+    # )
+    # updated_at = db.Column(
+    #     db.DateTime, onupdate=int(time.time()), comment="更新时间(时间戳)"
+    # )
+
+    created_at = db.Column(db.DateTime, default=datetime.now)
+    updated_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
+    deleted = db.Column(db.Integer, nullable=False, default=UNDELETED)
 
     def __getitem__(self, item):
         return getattr(self, item)
@@ -46,6 +48,9 @@ class BaseModel(db.Model):
         :return:
         """
         return self.__dict__
+
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
     def to_json(self, hidden_fields=None):
         """
@@ -108,8 +113,14 @@ class BaseModel(db.Model):
         :return:
         """
         try:
-            self.deleted = self.id
+            self.deleted = DELETED
             db.session.commit()
         except BaseException as e:
             db.session.rollback()
             raise TypeError("delete error {}".format(str(e)))
+
+    def update(self):
+        try:
+            db.session.commit()
+        except Exception as e:
+            raise TypeError("update error {}".format(str(e)))
