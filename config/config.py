@@ -15,7 +15,7 @@ def get_config():
     if flask_env.upper() == "DEV":
         conf.read(os.path.join(base_path, "dev.ini"))
     else:
-        conf.read(os.path.join(base_path, "pro.ini"))
+        conf.read(os.path.join(base_path, "prd.ini"))
 
     return conf
 
