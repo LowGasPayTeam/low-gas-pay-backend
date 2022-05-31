@@ -1,6 +1,6 @@
 .PHONY: help
 
-IMAGE = low-gas-pay-backend
+IMAGE ?= low-gas-pay-backend
 VERSION ?= $(shell git show -s --pretty=format:%h)
 
 help: ## Prints help for targets with comments
