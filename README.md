@@ -1,6 +1,53 @@
 # low-gas-pay-backend
 low gas pay backend
 
+## 环境准备
+* [安装Docker](https://docs.docker.com/engine/install/ubuntu/)
+* 输入密码登陆dockerhub
+    ```shell
+    docker login --username lowgaspay --password-stdin
+    ```
+* 部署Mysql
+    ```shell
+    sudo docker run --name db -d -e MYSQL_ROOT_PASSWORD={ROOT_PASSWORD} -v /path/to/data:/var/lib/mysql -v /etc/localtime:/etc/localtime -p 127.0.0.1:3306:3306 mysql:5.7
+    ```
+* 创建数据库、用户并分配权限
+    ```shell
+    mysql --host=localhost --port=3306 --protocol=TCP -uroot -p{ROOT_PASSWORD}
+    > create database lowgaspay;
+    > CREATE USER 'lgp'@'%' IDENTIFIED WITH mysql_native_password BY '{USER_PASSWORD}';
+    > GRANT ALL PRIVILEGES ON lowgaspay.* TO 'lgp'@'%';
+    > flush privileges;
+    ```
+
+## 服务部署
+* 修改配置文件
+    ```ini
+    [base]
+    SECRET_KEY = ShaHeTop-Almighty-ares
+    DEBUG = False
+    RUN_HOST = 0.0.0.0
+    RUN_PORT = 5000
+
+    [mysql]
+    HOSTNAME = db
+    PORT = 3306
+    USERNAME = lowgaspay
+    PASSWORD = {USER_PASSWORD}
+    DATABASE = lowgaspay
+    ```
+* 初始化数据库表
+    ```json
+	docker run -it --rm --link db --env FLASK_ENV="DEV" --env FLASK_APP=create_app.py lowgaspay/low-gas-pay-backend:f646361 flask db init
+
+	docker run -it --rm --link db --env FLASK_ENV="DEV" --env FLASK_APP=create_app.py lowgaspay/low-gas-pay-backend:f646361 flask db migrate && flask db upgrade
+    ```
+
+* 启动服务
+    ```json
+	docker run -d --name lowgaspay --env FLASK_ENV="DEV" -v /path/to/config:/low-gas-pay-backend/config -p 5000:5000 lowgaspay/low-gas-pay-backend:f646361
+    ```
+
 ## Token Order
 
 ### 获取所有Token Order
