@@ -21,7 +21,12 @@ low gas pay backend
     ```
 
 ## 服务部署
-* 修改配置文件
+* 创建配置目录
+    ```shell
+    mkdir -p /path/to/config
+    ```
+
+* 创建`prd.ini`配置文件
     ```ini
     [base]
     SECRET_KEY = ShaHeTop-Almighty-ares
@@ -36,11 +41,28 @@ low gas pay backend
     PASSWORD = {USER_PASSWORD}
     DATABASE = lowgaspay
     ```
+
+* 创建`dev.ini`配置文件
+    ```ini
+    [base]
+    SECRET_KEY = ShaHeTop-Almighty-ares
+    DEBUG = True
+    RUN_HOST = 0.0.0.0
+    RUN_PORT = 9999
+
+    [mysql]
+    HOSTNAME = db
+    PORT = 3306
+    USERNAME = lowgaspay
+    PASSWORD = {USER_PASSWORD}
+    DATABASE = lowgaspay
+    ```
+
 * 初始化数据库表
     ```json
-	docker run -it --rm --link db --env FLASK_ENV="DEV" --env FLASK_APP=create_app.py lowgaspay/low-gas-pay-backend:f646361 flask db init
+	docker run -it --rm --link db --env FLASK_ENV="DEV" --env FLASK_APP=create_app.py -v /path/to/config:/low-gas-pay-backend/config lowgaspay/low-gas-pay-backend:f646361 flask db init
 
-	docker run -it --rm --link db --env FLASK_ENV="DEV" --env FLASK_APP=create_app.py lowgaspay/low-gas-pay-backend:f646361 flask db migrate && flask db upgrade
+	docker run -it --rm --link db --env FLASK_ENV="DEV" --env FLASK_APP=create_app.py -v /path/to/config:/low-gas-pay-backend/config lowgaspay/low-gas-pay-backend:f646361 flask db migrate && flask db upgrade
     ```
 
 * 启动服务

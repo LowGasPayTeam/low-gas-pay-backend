@@ -11,7 +11,7 @@ def get_config():
     """获取配置文件"""
     conf = configparser.ConfigParser()
     flask_env = str(os.environ.get("FLASK_ENV"))
-    base_path = os.getcwd().split(PROJECT_NAME)[0] + "{}/config/".format(PROJECT_NAME)
+    base_path = os.getcwd().split(PROJECT_NAME)[0] + "{}/conf/".format(PROJECT_NAME)
     if flask_env.upper() == "DEV":
         conf.read(os.path.join(base_path, "dev.ini"))
     else:
