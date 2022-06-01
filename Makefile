@@ -13,7 +13,8 @@ app_build: ## Build docker image
 
 app_push: ## Push docker image
 	docker tag  $(IMAGE) $(REPO)/$(IMAGE)
-	docker push $(REPO)/$(IMAGE)
+	docker tag  $(REPO)/$(IMAGE) $(REPO)/$(APP):latest
+	docker push $(REPO)/$(APP):latest
 
 db_init: ## Init Database
 	docker run -it --rm  --name lowgaspay --env FLASK_ENV="DEV" --env FLASK_APP=create_app.py $(IMAGE) flask db init

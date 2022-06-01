@@ -60,14 +60,14 @@ low gas pay backend
 
 * 初始化数据库表
     ```json
-	docker run -it --rm --link db --env FLASK_ENV="DEV" --env FLASK_APP=create_app.py -v /path/to/config:/low-gas-pay-backend/config lowgaspay/low-gas-pay-backend:f646361 flask db init
+	docker run -it --rm --link db --env FLASK_ENV="DEV" --env FLASK_APP=create_app.py -v /path/to/config:/low-gas-pay-backend/config lowgaspay/low-gas-pay-backend:latest flask db init
 
-	docker run -it --rm --link db --env FLASK_ENV="DEV" --env FLASK_APP=create_app.py -v /path/to/config:/low-gas-pay-backend/config lowgaspay/low-gas-pay-backend:f646361 flask db migrate && flask db upgrade
+	docker run -it --rm --link db --env FLASK_ENV="DEV" --env FLASK_APP=create_app.py -v /path/to/config:/low-gas-pay-backend/config lowgaspay/low-gas-pay-backend:latest flask db migrate && flask db upgrade
     ```
 
 * 启动服务
     ```json
-	docker run -d --name lowgaspay --env FLASK_ENV="DEV" -v /path/to/config:/low-gas-pay-backend/config -p 5000:5000 lowgaspay/low-gas-pay-backend:f646361
+	docker run -d --name lowgaspay --env FLASK_ENV="DEV" -v /path/to/config:/low-gas-pay-backend/config -p 5000:5000 lowgaspay/low-gas-pay-backend:latest
     ```
 
 ## Token Order
