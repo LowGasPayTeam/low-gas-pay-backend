@@ -60,9 +60,7 @@ low gas pay backend
 
 * 初始化数据库表
     ```json
-	docker run -it --rm --link db --env FLASK_ENV="DEV" --env FLASK_APP=create_app.py -v /path/to/config:/low-gas-pay-backend/config lowgaspay/low-gas-pay-backend:latest flask db init
-
-	docker run -it --rm --link db --env FLASK_ENV="DEV" --env FLASK_APP=create_app.py -v /path/to/config:/low-gas-pay-backend/config lowgaspay/low-gas-pay-backend:latest flask db migrate && flask db upgrade
+	docker run -it --rm --link db --env FLASK_ENV=DEV --env FLASK_APP=create_app.py -v /path/to/conf:/low-gas-pay-backend/conf lowgaspay/low-gas-pay-backend:latest flask db init && flask db migrate && flask db upgrade
     ```
 
 * 启动服务
