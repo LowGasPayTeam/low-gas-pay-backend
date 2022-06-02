@@ -17,6 +17,11 @@ class TokenListApi(Resource):
         self.parser.add_argument("size", type=int, required=True, location="args")
         self.parser.add_argument("address", type=str, required=True, location="args")
 
+        self.post_schema = {
+            "type": "object",
+            "properties": {"order_gas_type": {"type": "string"}},
+        }
+
     @wrap_response
     def get(self):
         params = self.parser.parse_args()
@@ -30,6 +35,9 @@ class TokenListApi(Resource):
             pagination = TokenOrder.query.filter(
                 TokenOrder.order_create_addr == address, TokenOrder.deleted == 0
             ).paginate(page, per_page=size, error_out=False)
+            total = TokenOrder.query.filter(
+                TokenOrder.order_create_addr == address, TokenOrder.deleted == 0
+            ).count()
         except Exception as e:
             print(e)
             return InternalServerError(f"Get Token Order From Address {address} Failed")
@@ -40,7 +48,9 @@ class TokenListApi(Resource):
             trans = json.loads(raw_trans)
             token_order.transactions = trans
             orders.append(token_order.to_json())
-        return OK(None, orders)
+
+        resp = {"total": total, "orders": orders}
+        return OK(None, resp)
 
     @wrap_response
     def post(self):
