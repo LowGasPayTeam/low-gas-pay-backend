@@ -5,9 +5,34 @@ import json
 from flask import request
 from flask_restful import Resource, reqparse
 from app.models.token_order import TokenOrder
+from common.validator import validator
 from common.response import *
 
 ORDER_CREATED = "Created"
+
+POST_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "order_gas_type": {"type": "string"},
+        "order_gas_type": {"type": "string"},
+        "transactions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "amount": {"type": "string"},
+                    "contract": {"type": "string"},
+                    "from": {"type": "string"},
+                    "to": {"type": "string"},
+                    "status": {"type": "string"},
+                    "gas_paid_amount": {"type": "string"},
+                    "gas_paid_status": {"type": "string"},
+                    "gas_used": {"type": "string"},
+                },
+            },
+        },
+    },
+}
 
 
 class TokenListApi(Resource):
@@ -16,11 +41,6 @@ class TokenListApi(Resource):
         self.parser.add_argument("page", type=int, required=True, location="args")
         self.parser.add_argument("size", type=int, required=True, location="args")
         self.parser.add_argument("address", type=str, required=True, location="args")
-
-        self.post_schema = {
-            "type": "object",
-            "properties": {"order_gas_type": {"type": "string"}},
-        }
 
     @wrap_response
     def get(self):
@@ -53,6 +73,7 @@ class TokenListApi(Resource):
         return OK(None, resp)
 
     @wrap_response
+    @validator(POST_SCHEMA)
     def post(self):
         data = request.get_json(force=True)  # type: ignore
 

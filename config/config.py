@@ -54,6 +54,11 @@ class NewConfig(BaseConfig):
     SQLALCHEMY_DATABASE_URI = DB_URI
     SQLALCHEMY_TRACK_MODIFICATIONS = True
 
+    # gas
+    ETHSCAN_API_KEY = conf.get("gas", "API_KEY")
+    ETHSCAN_ORACLE_PATH = conf.get("gas", "ORACLE_PATH")
+    ETHSCAN_TIMEOUT = conf.get("gas", "TIMEOUT")
+
 if __name__ == '__main__':
     conf = NewConfig()
     print(conf.DB_URI)
