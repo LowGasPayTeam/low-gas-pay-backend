@@ -38,39 +38,71 @@ POST_SCHEMA = {
 class TokenListApi(Resource):
     def __init__(self):
         self.parser = reqparse.RequestParser()
-        self.parser.add_argument("page", type=int, required=True, location="args")
-        self.parser.add_argument("size", type=int, required=True, location="args")
-        self.parser.add_argument("address", type=str, required=True, location="args")
+        self.parser.add_argument("page", type=int, required=False, location="args")
+        self.parser.add_argument("size", type=int, required=False, location="args")
+        self.parser.add_argument("address", type=str, required=False, location="args")
+        self.parser.add_argument("status", type=str, required=False, location="args")
 
     @wrap_response
     def get(self):
+
         params = self.parser.parse_args()
-        page = params.get("page")
-        size = params.get("size")
-        address = params.get("address")
-        if not address or len(address) == 0:
-            return BadRequest("address required")
 
-        try:
-            pagination = TokenOrder.query.filter(
-                TokenOrder.order_create_addr == address, TokenOrder.deleted == 0
-            ).paginate(page, per_page=size, error_out=False)
-            total = TokenOrder.query.filter(
-                TokenOrder.order_create_addr == address, TokenOrder.deleted == 0
-            ).count()
-        except Exception as e:
-            print(e)
-            return InternalServerError(f"Get Token Order From Address {address} Failed")
+        filters = {}
+        filters["deleted"] = 0
 
-        orders = list()
-        for token_order in pagination.items:
-            raw_trans = token_order.transactions
-            trans = json.loads(raw_trans)
-            token_order.transactions = trans
-            orders.append(token_order.to_json())
+        page = params.get("page", None)
+        size = params.get("size", None)
 
-        resp = {"total": total, "orders": orders}
-        return OK(None, resp)
+        address = params.get("address", None)
+        if address:
+            filters["order_create_addr"] = address
+
+        status = params.get("status", None)
+        if status:
+            filters["order_status"] = status
+
+        if page and size:
+            try:
+                pagination = TokenOrder.query.filter_by(**filters).paginate(
+                    page, per_page=size, error_out=False
+                )
+                total = TokenOrder.query.filter_by(**filters).count()
+
+            except Exception as e:
+                print(e)
+                return InternalServerError(
+                    f"Get Token Order From Address {address} Failed"
+                )
+
+            orders = list()
+            for token_order in pagination.items:
+                raw_trans = token_order.transactions
+                trans = json.loads(raw_trans)
+                token_order.transactions = trans
+                orders.append(token_order.to_json())
+
+            resp = {"total": total, "orders": orders}
+            return OK(None, resp)
+        else:
+            try:
+                items = TokenOrder.query.filter_by(**filters).all()
+                total = len(items)
+            except Exception as e:
+                print(e)
+                return InternalServerError(
+                    f"Get Token Order From Address {address} Failed"
+                )
+
+            orders = list()
+            for token_order in items:
+                raw_trans = token_order.transactions
+                trans = json.loads(raw_trans)
+                token_order.transactions = trans
+                orders.append(token_order.to_json())
+
+            resp = {"total": total, "orders": orders}
+            return OK(None, resp)
 
     @wrap_response
     @validator(POST_SCHEMA)
