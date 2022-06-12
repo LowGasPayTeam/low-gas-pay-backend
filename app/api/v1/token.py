@@ -1,10 +1,12 @@
 # coding=utf-8
 # pyright: reportUndefinedVariable=false, reportGeneralTypeIssues=false
 
-import json
+import logging
+# import json
 from flask import request
 from flask_restful import Resource, reqparse
 from app.models.token_order import TokenOrder
+from app.models.token_transaction import TokenTxn
 from common.validator import validator
 from common.response import *
 
@@ -77,10 +79,12 @@ class TokenListApi(Resource):
 
             orders = list()
             for token_order in pagination.items:
-                raw_trans = token_order.transactions
-                trans = json.loads(raw_trans)
-                token_order.transactions = trans
-                orders.append(token_order.to_json())
+                token_order_dict = token_order.as_dict()
+                trans_list = []
+                for item in token_order.transactions:
+                    trans_list.append(item.as_dict())
+                token_order_dict["transactions"] = trans_list
+                orders.append(token_order_dict)
 
             resp = {"total": total, "orders": orders}
             return OK(None, resp)
@@ -96,10 +100,13 @@ class TokenListApi(Resource):
 
             orders = list()
             for token_order in items:
-                raw_trans = token_order.transactions
-                trans = json.loads(raw_trans)
-                token_order.transactions = trans
-                orders.append(token_order.to_json())
+                print(token_order.transactions)
+                token_order_dict = token_order.as_dict()
+                trans_list = []
+                for item in token_order.transactions:
+                    trans_list.append(item.as_dict())
+                token_order_dict["transactions"] = trans_list
+                orders.append(token_order_dict)
 
             resp = {"total": total, "orders": orders}
             return OK(None, resp)
@@ -117,23 +124,44 @@ class TokenListApi(Resource):
             return BadRequest("Required Feild Missing")
 
         address = data.get("order_create_addr")  # type: ignore
+        transactions = data.get("transactions") # type: ignore
+
         token_order = TokenOrder(
             order_status=ORDER_CREATED,
             order_gas_type=data.get("order_gas_type"),  # type: ignore
             order_create_addr=address,  # type: ignore
-            transactions=json.dumps(data.get("transactions")),  # type: ignore
+            # transactions=json.dumps(data.get("transactions")),  # type: ignore
         )
+
+        for t in transactions:
+            txn = TokenTxn(
+                from_addr = t.get("from_addr"),
+                to_addr = t.get("to_addr"),
+                token_contract = t.get("token_contract"),
+                token_amount=t.get("token_amount"),
+            )
+            token_order.transactions.append(txn)
+
         try:
             token_order.save()
         except Exception as error:
             print(error)
             return InternalServerError("Create Token Order Failed")
 
-        saved_token_order = TokenOrder.query.get(token_order.order_id)
-        trans = json.loads(saved_token_order.transactions)
-        saved_token_order.transactions = trans
-        return Response(200, "Successful", saved_token_order.as_dict())
+        try:
+            saved_token_order = TokenOrder.query.get(id)
+        except Exception as error:
+            return InternalServerError(f"Get Token Order {id} Error: {error}")
 
+        if not saved_token_order:
+            return NotFound(f"Token Order {id} Not Found")
+
+        token_order_dict = saved_token_order.as_dict()
+        trans_list = []
+        for item in token_order.transactions:
+            trans_list.append(item.as_dict())
+        token_order_dict["transactions"] = trans_list
+        return OK("Successful", token_order_dict)
 
 class TokenApi(Resource):
     @wrap_response
@@ -146,9 +174,12 @@ class TokenApi(Resource):
         if not token_order:
             return NotFound(f"Token Order {id} Not Found")
 
-        trans = json.loads(token_order.transactions)
-        token_order.transactions = trans
-        return OK("Successful", token_order.as_dict())
+        token_order_dict = token_order.as_dict()
+        trans_list = []
+        for item in token_order.transactions:
+            trans_list.append(item.as_dict())
+        token_order_dict["transactions"] = trans_list
+        return OK("Successful", token_order_dict)
 
     @wrap_response
     def put(self, id):
@@ -162,9 +193,6 @@ class TokenApi(Resource):
         data = request.get_json(force=True)  # type: ignore
         if not data:
             return BadRequest("Required Data Missing")
-
-        if "transactions" in data:
-            data["transactions"] = json.dumps(data["transactions"])
 
         try:
             token_order_dict = token_order.as_dict()

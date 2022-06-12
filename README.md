@@ -93,19 +93,20 @@ low gas pay backend
 - METHOD: `GET`
 - Response StatusCode: `200`, `400`, `500`
 - Response Data:
+
   ```json
   {
     "code": 200,
     "data": {
       "orders": [
         {
-          "created_at": "2022-05-29 09:22:57",
+          "created_at": "Sun, 12 Jun 2022 16:27:39 GMT",
           "deleted": 0,
           "order_create_addr": "0x123456789",
           "order_exec_id": null,
           "order_exec_status": null,
           "order_gas_type": "ntom",
-          "order_id": 2,
+          "order_id": 13,
           "order_status": "Created",
           "trans_begin_time": null,
           "trans_end_time": null,
@@ -113,335 +114,48 @@ low gas pay backend
           "trans_gas_fee_max": null,
           "transactions": [
             {
-              "amount": "100.10000",
-              "contract": "0xqwerqwerwr",
-              "from": "0x123",
-              "gas_paid_amount": "",
-              "gas_paid_status": "",
-              "gas_used": "0.1",
-              "status": "",
-              "to": "0xabc"
+              "created_at": "Sun, 12 Jun 2022 16:27:39 GMT",
+              "deleted": 0,
+              "from_addr": "0x123",
+              "order_id": 13,
+              "to_addr": "0xabc",
+              "token_amount": "100.10000",
+              "token_contract": "0xqwerqwerwr",
+              "token_date": null,
+              "trans_gas_paid_amount": null,
+              "trans_gas_paid_status": null,
+              "trans_gas_txn_rate": null,
+              "trans_gas_used": null,
+              "trans_id": null,
+              "trans_status": "Deleted",
+              "trans_txn": null,
+              "txn_id": 1,
+              "updated_at": "Sun, 12 Jun 2022 17:09:47 GMT"
             },
             {
-              "amount": "100.10000",
-              "contract": "0xqwerqwerwr",
-              "from": "0x123",
-              "gas_paid_amount": "",
-              "gas_paid_status": "",
-              "gas_used": "0.1",
-              "status": "",
-              "to": "0xxyz"
-            },
-            {
-              "amount": "100.10000",
-              "contract": "0xqwerqwerwr",
-              "from": "0xqwe",
-              "gas_paid_amount": "",
-              "gas_paid_status": "",
-              "gas_used": "0.1",
-              "status": "",
-              "to": "0xabc"
-            },
-            {
-              "amount": "100.10000",
-              "contract": "0xqwerqwerwr",
-              "from": "0xabc",
-              "gas_paid_amount": "",
-              "gas_paid_status": "",
-              "gas_used": "0.1",
-              "status": "",
-              "to": "0xxyz"
+              "created_at": "Sun, 12 Jun 2022 16:27:39 GMT",
+              "deleted": 0,
+              "from_addr": "0x123",
+              "order_id": 13,
+              "to_addr": "0xabc",
+              "token_amount": "10.10000",
+              "token_contract": "0xqwerqwerwr",
+              "token_date": null,
+              "trans_gas_paid_amount": null,
+              "trans_gas_paid_status": null,
+              "trans_gas_txn_rate": null,
+              "trans_gas_used": null,
+              "trans_id": null,
+              "trans_status": null,
+              "trans_txn": null,
+              "txn_id": 2,
+              "updated_at": "Sun, 12 Jun 2022 16:27:39 GMT"
             }
           ],
-          "updated_at": "2022-05-29 09:22:57"
-        },
-        {
-          "created_at": "2022-05-29 09:25:57",
-          "deleted": 0,
-          "order_create_addr": "0x123456789",
-          "order_exec_id": null,
-          "order_exec_status": null,
-          "order_gas_type": "ntom",
-          "order_id": 3,
-          "order_status": "Created",
-          "trans_begin_time": null,
-          "trans_end_time": null,
-          "trans_gas_fee_limit": null,
-          "trans_gas_fee_max": null,
-          "transactions": [
-            {
-              "amount": "100.10000",
-              "contract": "0xqwerqwerwr",
-              "from": "0x123",
-              "gas_paid_amount": "",
-              "gas_paid_status": "",
-              "gas_used": "0.1",
-              "status": "",
-              "to": "0xabc"
-            },
-            {
-              "amount": "100.10000",
-              "contract": "0xqwerqwerwr",
-              "from": "0x123",
-              "gas_paid_amount": "",
-              "gas_paid_status": "",
-              "gas_used": "0.1",
-              "status": "",
-              "to": "0xxyz"
-            },
-            {
-              "amount": "100.10000",
-              "contract": "0xqwerqwerwr",
-              "from": "0xqwe",
-              "gas_paid_amount": "",
-              "gas_paid_status": "",
-              "gas_used": "0.1",
-              "status": "",
-              "to": "0xabc"
-            },
-            {
-              "amount": "100.10000",
-              "contract": "0xqwerqwerwr",
-              "from": "0xabc",
-              "gas_paid_amount": "",
-              "gas_paid_status": "",
-              "gas_used": "0.1",
-              "status": "",
-              "to": "0xxyz"
-            }
-          ],
-          "updated_at": "2022-05-29 09:25:57"
-        },
-        {
-          "created_at": "2022-05-29 09:31:14",
-          "deleted": 0,
-          "order_create_addr": "0x123456789",
-          "order_exec_id": null,
-          "order_exec_status": null,
-          "order_gas_type": "ntom",
-          "order_id": 4,
-          "order_status": "Created",
-          "trans_begin_time": null,
-          "trans_end_time": null,
-          "trans_gas_fee_limit": null,
-          "trans_gas_fee_max": null,
-          "transactions": [
-            {
-              "amount": "100.10000",
-              "contract": "0xqwerqwerwr",
-              "from": "0x123",
-              "gas_paid_amount": "",
-              "gas_paid_status": "",
-              "gas_used": "0.1",
-              "status": "",
-              "to": "0xabc"
-            },
-            {
-              "amount": "100.10000",
-              "contract": "0xqwerqwerwr",
-              "from": "0x123",
-              "gas_paid_amount": "",
-              "gas_paid_status": "",
-              "gas_used": "0.1",
-              "status": "",
-              "to": "0xxyz"
-            },
-            {
-              "amount": "100.10000",
-              "contract": "0xqwerqwerwr",
-              "from": "0xqwe",
-              "gas_paid_amount": "",
-              "gas_paid_status": "",
-              "gas_used": "0.1",
-              "status": "",
-              "to": "0xabc"
-            },
-            {
-              "amount": "100.10000",
-              "contract": "0xqwerqwerwr",
-              "from": "0xabc",
-              "gas_paid_amount": "",
-              "gas_paid_status": "",
-              "gas_used": "0.1",
-              "status": "",
-              "to": "0xxyz"
-            }
-          ],
-          "updated_at": "2022-05-29 09:31:14"
-        },
-        {
-          "created_at": "2022-05-29 09:36:21",
-          "deleted": 0,
-          "order_create_addr": "0x123456789",
-          "order_exec_id": null,
-          "order_exec_status": null,
-          "order_gas_type": "ntom",
-          "order_id": 5,
-          "order_status": "Created",
-          "trans_begin_time": null,
-          "trans_end_time": null,
-          "trans_gas_fee_limit": null,
-          "trans_gas_fee_max": null,
-          "transactions": [
-            {
-              "amount": "100.10000",
-              "contract": "0xqwerqwerwr",
-              "from": "0x123",
-              "gas_paid_amount": "",
-              "gas_paid_status": "",
-              "gas_used": "0.1",
-              "status": "",
-              "to": "0xabc"
-            },
-            {
-              "amount": "100.10000",
-              "contract": "0xqwerqwerwr",
-              "from": "0x123",
-              "gas_paid_amount": "",
-              "gas_paid_status": "",
-              "gas_used": "0.1",
-              "status": "",
-              "to": "0xxyz"
-            },
-            {
-              "amount": "100.10000",
-              "contract": "0xqwerqwerwr",
-              "from": "0xqwe",
-              "gas_paid_amount": "",
-              "gas_paid_status": "",
-              "gas_used": "0.1",
-              "status": "",
-              "to": "0xabc"
-            },
-            {
-              "amount": "100.10000",
-              "contract": "0xqwerqwerwr",
-              "from": "0xabc",
-              "gas_paid_amount": "",
-              "gas_paid_status": "",
-              "gas_used": "0.1",
-              "status": "",
-              "to": "0xxyz"
-            }
-          ],
-          "updated_at": "2022-05-29 09:36:21"
-        },
-        {
-          "created_at": "2022-05-29 09:40:28",
-          "deleted": 0,
-          "order_create_addr": "0x123456789",
-          "order_exec_id": null,
-          "order_exec_status": null,
-          "order_gas_type": "ntom",
-          "order_id": 7,
-          "order_status": "Created",
-          "trans_begin_time": null,
-          "trans_end_time": null,
-          "trans_gas_fee_limit": null,
-          "trans_gas_fee_max": null,
-          "transactions": [
-            {
-              "amount": "100.10000",
-              "contract": "0xqwerqwerwr",
-              "from": "0x123",
-              "gas_paid_amount": "",
-              "gas_paid_status": "",
-              "gas_used": "0.1",
-              "status": "",
-              "to": "0xabc"
-            },
-            {
-              "amount": "100.10000",
-              "contract": "0xqwerqwerwr",
-              "from": "0x123",
-              "gas_paid_amount": "",
-              "gas_paid_status": "",
-              "gas_used": "0.1",
-              "status": "",
-              "to": "0xxyz"
-            },
-            {
-              "amount": "100.10000",
-              "contract": "0xqwerqwerwr",
-              "from": "0xqwe",
-              "gas_paid_amount": "",
-              "gas_paid_status": "",
-              "gas_used": "0.1",
-              "status": "",
-              "to": "0xabc"
-            },
-            {
-              "amount": "100.10000",
-              "contract": "0xqwerqwerwr",
-              "from": "0xabc",
-              "gas_paid_amount": "",
-              "gas_paid_status": "",
-              "gas_used": "0.1",
-              "status": "",
-              "to": "0xxyz"
-            }
-          ],
-          "updated_at": "2022-05-29 09:40:28"
-        },
-        {
-          "created_at": "2022-05-29 15:50:05",
-          "deleted": 0,
-          "order_create_addr": "0x123456789",
-          "order_exec_id": null,
-          "order_exec_status": null,
-          "order_gas_type": "ntom",
-          "order_id": 8,
-          "order_status": "Created",
-          "trans_begin_time": null,
-          "trans_end_time": null,
-          "trans_gas_fee_limit": null,
-          "trans_gas_fee_max": null,
-          "transactions": [
-            {
-              "amount": "100.10000",
-              "contract": "0xqwerqwerwr",
-              "from": "0x123",
-              "gas_paid_amount": "",
-              "gas_paid_status": "",
-              "gas_used": "0.1",
-              "status": "",
-              "to": "0xabc"
-            },
-            {
-              "amount": "100.10000",
-              "contract": "0xqwerqwerwr",
-              "from": "0x123",
-              "gas_paid_amount": "",
-              "gas_paid_status": "",
-              "gas_used": "0.1",
-              "status": "",
-              "to": "0xxyz"
-            },
-            {
-              "amount": "100.10000",
-              "contract": "0xqwerqwerwr",
-              "from": "0xqwe",
-              "gas_paid_amount": "",
-              "gas_paid_status": "",
-              "gas_used": "0.1",
-              "status": "",
-              "to": "0xabc"
-            },
-            {
-              "amount": "100.10000",
-              "contract": "0xqwerqwerwr",
-              "from": "0xabc",
-              "gas_paid_amount": "",
-              "gas_paid_status": "",
-              "gas_used": "0.1",
-              "status": "",
-              "to": "0xxyz"
-            }
-          ],
-          "updated_at": "2022-05-29 15:50:05"
+          "updated_at": "Sun, 12 Jun 2022 16:27:39 GMT"
         }
       ],
-      "total": 6
+      "total": 1
     },
     "message": null
   }
@@ -458,44 +172,24 @@ low gas pay backend
     "order_gas_type": "ntom",
     "transactions": [
       {
-        "amount": "100.10000",
-        "contract": "0xqwerqwerwr",
-        "from": "0x123",
-        "gas_paid_amount": "",
-        "gas_paid_status": "",
-        "gas_used": "0.1",
-        "status": "",
-        "to": "0xabc"
+        "from_addr": "0x123",
+        "to_addr": "0xabc",
+        "token_amount": "100.10000",
+        "token_contract": "0xqwerqwerwr",
+        "trans_gas_paid_amount": "",
+        "trans_gas_paid_status": "",
+        "trans_gas_used": "",
+        "trans_status": ""
       },
       {
-        "amount": "100.10000",
-        "contract": "0xqwerqwerwr",
-        "from": "0x123",
-        "gas_paid_amount": "",
-        "gas_paid_status": "",
-        "gas_used": "0.1",
-        "status": "",
-        "to": "0xxyz"
-      },
-      {
-        "amount": "100.10000",
-        "contract": "0xqwerqwerwr",
-        "from": "0xqwe",
-        "gas_paid_amount": "",
-        "gas_paid_status": "",
-        "gas_used": "0.1",
-        "status": "",
-        "to": "0xabc"
-      },
-      {
-        "amount": "100.10000",
-        "contract": "0xqwerqwerwr",
-        "from": "0xabc",
-        "gas_paid_amount": "",
-        "gas_paid_status": "",
-        "gas_used": "0.1",
-        "status": "",
-        "to": "0xxyz"
+        "from_addr": "0x123",
+        "to_addr": "0xabc",
+        "token_amount": "10.10000",
+        "token_contract": "0xqwerqwerwr",
+        "trans_gas_paid_amount": "",
+        "trans_gas_paid_status": "",
+        "trans_gas_used": "",
+        "trans_status": ""
       }
     ]
   }
@@ -506,63 +200,66 @@ low gas pay backend
   {
     "code": 200,
     "data": {
-      "created_at": "Sun, 29 May 2022 21:02:32 GMT",
-      "deleted": 0,
-      "order_create_addr": "0x123456789",
-      "order_exec_id": null,
-      "order_exec_status": null,
-      "order_gas_type": "ntom",
-      "order_id": 10,
-      "order_status": "Created",
-      "trans_begin_time": null,
-      "trans_end_time": null,
-      "trans_gas_fee_limit": null,
-      "trans_gas_fee_max": null,
-      "transactions": [
+      "orders": [
         {
-          "amount": "100.10000",
-          "contract": "0xqwerqwerwr",
-          "from": "0x123",
-          "gas_paid_amount": "",
-          "gas_paid_status": "",
-          "gas_used": "0.1",
-          "status": "",
-          "to": "0xabc"
-        },
-        {
-          "amount": "100.10000",
-          "contract": "0xqwerqwerwr",
-          "from": "0x123",
-          "gas_paid_amount": "",
-          "gas_paid_status": "",
-          "gas_used": "0.1",
-          "status": "",
-          "to": "0xxyz"
-        },
-        {
-          "amount": "100.10000",
-          "contract": "0xqwerqwerwr",
-          "from": "0xqwe",
-          "gas_paid_amount": "",
-          "gas_paid_status": "",
-          "gas_used": "0.1",
-          "status": "",
-          "to": "0xabc"
-        },
-        {
-          "amount": "100.10000",
-          "contract": "0xqwerqwerwr",
-          "from": "0xabc",
-          "gas_paid_amount": "",
-          "gas_paid_status": "",
-          "gas_used": "0.1",
-          "status": "",
-          "to": "0xxyz"
+          "created_at": "Sun, 12 Jun 2022 16:27:39 GMT",
+          "deleted": 0,
+          "order_create_addr": "0x123456789",
+          "order_exec_id": null,
+          "order_exec_status": null,
+          "order_gas_type": "ntom",
+          "order_id": 13,
+          "order_status": "Created",
+          "trans_begin_time": null,
+          "trans_end_time": null,
+          "trans_gas_fee_limit": null,
+          "trans_gas_fee_max": null,
+          "transactions": [
+            {
+              "created_at": "Sun, 12 Jun 2022 16:27:39 GMT",
+              "deleted": 0,
+              "from_addr": "0x123",
+              "order_id": 13,
+              "to_addr": "0xabc",
+              "token_amount": "100.10000",
+              "token_contract": "0xqwerqwerwr",
+              "token_date": null,
+              "trans_gas_paid_amount": null,
+              "trans_gas_paid_status": null,
+              "trans_gas_txn_rate": null,
+              "trans_gas_used": null,
+              "trans_id": null,
+              "trans_status": "Deleted",
+              "trans_txn": null,
+              "txn_id": 1,
+              "updated_at": "Sun, 12 Jun 2022 17:09:47 GMT"
+            },
+            {
+              "created_at": "Sun, 12 Jun 2022 16:27:39 GMT",
+              "deleted": 0,
+              "from_addr": "0x123",
+              "order_id": 13,
+              "to_addr": "0xabc",
+              "token_amount": "10.10000",
+              "token_contract": "0xqwerqwerwr",
+              "token_date": null,
+              "trans_gas_paid_amount": null,
+              "trans_gas_paid_status": null,
+              "trans_gas_txn_rate": null,
+              "trans_gas_used": null,
+              "trans_id": null,
+              "trans_status": null,
+              "trans_txn": null,
+              "txn_id": 2,
+              "updated_at": "Sun, 12 Jun 2022 16:27:39 GMT"
+            }
+          ],
+          "updated_at": "Sun, 12 Jun 2022 16:27:39 GMT"
         }
       ],
-      "updated_at": "Sun, 29 May 2022 21:02:32 GMT"
+      "total": 1
     },
-    "message": "Successful"
+    "message": null
   }
   ```
 
@@ -572,67 +269,71 @@ low gas pay backend
 - METHOD: `GET`
 - Response StatusCode: `200`, `400`, `500`
 - Response Data:
+
   ```json
   {
     "code": 200,
     "data": {
-      "created_at": "Sun, 29 May 2022 21:02:32 GMT",
-      "deleted": 0,
-      "order_create_addr": "0x123456789",
-      "order_exec_id": null,
-      "order_exec_status": null,
-      "order_gas_type": "ntom",
-      "order_id": 10,
-      "order_status": "Created",
-      "trans_begin_time": null,
-      "trans_end_time": null,
-      "trans_gas_fee_limit": null,
-      "trans_gas_fee_max": null,
-      "transactions": [
+      "orders": [
         {
-          "amount": "100.10000",
-          "contract": "0xqwerqwerwr",
-          "from": "0x123",
-          "gas_paid_amount": "",
-          "gas_paid_status": "",
-          "gas_used": "0.1",
-          "status": "",
-          "to": "0xabc"
-        },
-        {
-          "amount": "100.10000",
-          "contract": "0xqwerqwerwr",
-          "from": "0x123",
-          "gas_paid_amount": "",
-          "gas_paid_status": "",
-          "gas_used": "0.1",
-          "status": "",
-          "to": "0xxyz"
-        },
-        {
-          "amount": "100.10000",
-          "contract": "0xqwerqwerwr",
-          "from": "0xqwe",
-          "gas_paid_amount": "",
-          "gas_paid_status": "",
-          "gas_used": "0.1",
-          "status": "",
-          "to": "0xabc"
-        },
-        {
-          "amount": "100.10000",
-          "contract": "0xqwerqwerwr",
-          "from": "0xabc",
-          "gas_paid_amount": "",
-          "gas_paid_status": "",
-          "gas_used": "0.1",
-          "status": "",
-          "to": "0xxyz"
+          "created_at": "Sun, 12 Jun 2022 16:27:39 GMT",
+          "deleted": 0,
+          "order_create_addr": "0x123456789",
+          "order_exec_id": null,
+          "order_exec_status": null,
+          "order_gas_type": "ntom",
+          "order_id": 13,
+          "order_status": "Created",
+          "trans_begin_time": null,
+          "trans_end_time": null,
+          "trans_gas_fee_limit": null,
+          "trans_gas_fee_max": null,
+          "transactions": [
+            {
+              "created_at": "Sun, 12 Jun 2022 16:27:39 GMT",
+              "deleted": 0,
+              "from_addr": "0x123",
+              "order_id": 13,
+              "to_addr": "0xabc",
+              "token_amount": "100.10000",
+              "token_contract": "0xqwerqwerwr",
+              "token_date": null,
+              "trans_gas_paid_amount": null,
+              "trans_gas_paid_status": null,
+              "trans_gas_txn_rate": null,
+              "trans_gas_used": null,
+              "trans_id": null,
+              "trans_status": "Deleted",
+              "trans_txn": null,
+              "txn_id": 1,
+              "updated_at": "Sun, 12 Jun 2022 17:09:47 GMT"
+            },
+            {
+              "created_at": "Sun, 12 Jun 2022 16:27:39 GMT",
+              "deleted": 0,
+              "from_addr": "0x123",
+              "order_id": 13,
+              "to_addr": "0xabc",
+              "token_amount": "10.10000",
+              "token_contract": "0xqwerqwerwr",
+              "token_date": null,
+              "trans_gas_paid_amount": null,
+              "trans_gas_paid_status": null,
+              "trans_gas_txn_rate": null,
+              "trans_gas_used": null,
+              "trans_id": null,
+              "trans_status": null,
+              "trans_txn": null,
+              "txn_id": 2,
+              "updated_at": "Sun, 12 Jun 2022 16:27:39 GMT"
+            }
+          ],
+          "updated_at": "Sun, 12 Jun 2022 16:27:39 GMT"
         }
       ],
-      "updated_at": "Sun, 29 May 2022 21:02:32 GMT"
+      "total": 1
     },
-    "message": "Successful"
+    "message": null
   }
   ```
 
@@ -665,19 +366,7 @@ low gas pay backend
     "trans_begin_time": null,
     "trans_end_time": null,
     "trans_gas_fee_limit": null,
-    "trans_gas_fee_max": null,
-    "transactions": [
-      {
-        "amount": "100.10000",
-        "contract": "0xqwerqwerwr",
-        "from": "0x123",
-        "gas_paid_amount": "",
-        "gas_paid_status": "",
-        "gas_used": "0.1",
-        "status": "",
-        "to": "0xabc"
-      }
-    ]
+    "trans_gas_fee_max": null
   }
   ```
 - Response StatusCode: `200`, `400`, `500`
@@ -708,5 +397,78 @@ low gas pay backend
       "suggest": "70.961895154"
     },
     "message": "Success"
+  }
+  ```
+
+## Token Transaction
+
+### 获取 txn
+
+- URL: `/api/v1/txn/{txn_id}`
+- METHOD: `GET`
+- Response StatusCode: `200`, `400`, `500`
+- Response Data:
+  ```json
+  {
+    "code": 200,
+    "data": {
+      "created_at": "Sun, 12 Jun 2022 16:27:39 GMT",
+      "deleted": 0,
+      "from_addr": "0x123",
+      "order_id": 13,
+      "to_addr": "0xabc",
+      "token_amount": "100.10000",
+      "token_contract": "0xqwerqwerwr",
+      "token_date": null,
+      "trans_gas_paid_amount": null,
+      "trans_gas_paid_status": null,
+      "trans_gas_txn_rate": null,
+      "trans_gas_used": null,
+      "trans_id": null,
+      "trans_status": "Deleted",
+      "trans_txn": null,
+      "txn_id": 1,
+      "updated_at": "Sun, 12 Jun 2022 17:09:47 GMT"
+    },
+    "message": "Successful"
+  }
+  ```
+
+### 修改txn
+
+- URL: `/api/v1/txn/{txn_id}`
+- METHOD: `PUt`
+- Request
+    ```json
+    {
+      "trans_status": "Succeed"
+    }
+    ```
+
+- Response StatusCode: `200`, `400`, `500`
+- Response Data:
+  ```json
+  {
+    "code": 200,
+    "data": {
+      "created_at": "Sun, 12 Jun 2022 16:27:39 GMT",
+      "deleted": 0,
+      "from_addr": "0x123",
+      "order_id": 13,
+      "to_addr": "0xabc",
+      "token_amount": "100.10000",
+      "token_contract": "0xqwerqwerwr",
+      "token_date": null,
+      "trans_gas_paid_amount": null,
+      "trans_gas_paid_status": null,
+      "trans_gas_txn_rate": null,
+      "trans_gas_used": null,
+      "trans_id": null,
+      "trans_status": "Succeed",
+      "trans_txn": null,
+      "txn_id": 1,
+      "updated_at": "Sun, 12 Jun 2022 17:09:47 GMT"
+    },
+    "message": "Successful"
   }
   ```

@@ -5,6 +5,7 @@
 
 # from dataclasses import dataclass
 from app.models import BaseModel, db
+
 # from sqlalchemy.dialects.mysql import BIGINT
 
 
@@ -22,23 +23,27 @@ from app.models import BaseModel, db
 #         self.trans_txn_id = None
 #         self.trans_gas_txn_ratio = None
 
+
 class TokenTxn(BaseModel):
     __tablename__ = "token_txn"
     txn_id = db.Column(db.Integer, primary_key=True, autoincrement=True, comment="id")
-    order_id = db.Column(db.Integer, db.ForeignKey('token_order.order_id'), nullable=False)
+    order_id = db.Column(
+        db.Integer, db.ForeignKey("token_order.order_id"), nullable=False
+    )
     from_addr = db.Column(db.String(255), nullable=False)
     to_addr = db.Column(db.String(255), nullable=False)
     token_contract = db.Column(db.String(255), nullable=False)
     token_amount = db.Column(db.String(63), nullable=False)
-    # token_date = db.Column(db.DateTime, default=datetime.now)
     token_date = db.Column(db.DateTime, nullable=True)
+
+    trans_id = db.Column(db.String(255))
+    trans_txn = db.Column(db.Text)
     trans_status = db.Column(db.String(10))
     trans_gas_used = db.Column(db.String(63))
     trans_gas_paid_amount = db.Column(db.String(63))
-    trans_txn = db.Column(db.Text)
-    trans_id = db.Column(db.String(255))
+    trans_gas_paid_status = db.Column(db.String(63))
     trans_gas_txn_rate = db.Column(db.String(10))
-
+    # token_date = db.Column(db.DateTime, default=datetime.now)
 
     # order_status = db.Column(db.String(10), nullable=False)
     # order_gas_type = db.Column(db.String(10), nullable=False)
