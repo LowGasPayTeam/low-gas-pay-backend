@@ -2,6 +2,7 @@
 # pyright: reportUndefinedVariable=false, reportGeneralTypeIssues=false
 
 import logging
+from datetime import datetime
 # import json
 from flask import request
 from flask_restful import Resource, reqparse
@@ -120,17 +121,26 @@ class TokenListApi(Resource):
             "order_gas_type" not in data
             or "order_create_addr" not in data  # type: ignore
             or "transactions" not in data  # type: ignore
+            or "trans_begin_time" not in data # type: ignore
+            or "trans_end_time" not in data # type: ignore
         ):
             return BadRequest("Required Feild Missing")
 
         address = data.get("order_create_addr")  # type: ignore
         transactions = data.get("transactions") # type: ignore
 
+        trans_begin_time = datetime.strptime(data.get("trans_begin_time"), "%Y-%m-%dT%H:%M:%S.%fZ") # type: ignore
+        trans_end_time = datetime.strptime(data.get("trans_end_time"), "%Y-%m-%dT%H:%M:%S.%fZ") # type: ignore
+
+        print(trans_begin_time)
+        print(trans_end_time)
+
         token_order = TokenOrder(
             order_status=ORDER_CREATED,
             order_gas_type=data.get("order_gas_type"),  # type: ignore
             order_create_addr=address,  # type: ignore
-            # transactions=json.dumps(data.get("transactions")),  # type: ignore
+            trans_begin_time=trans_begin_time,
+            trans_end_time=trans_end_time
         )
 
         for t in transactions:
@@ -149,12 +159,12 @@ class TokenListApi(Resource):
             return InternalServerError("Create Token Order Failed")
 
         try:
-            saved_token_order = TokenOrder.query.get(id)
+            saved_token_order = TokenOrder.query.get(token_order.order_id)
         except Exception as error:
-            return InternalServerError(f"Get Token Order {id} Error: {error}")
+            return InternalServerError(f"Get Token Order {token_order.order_id} Error: {error}")
 
         if not saved_token_order:
-            return NotFound(f"Token Order {id} Not Found")
+            return NotFound(f"Token Order {token_order.order_id} Not Found")
 
         token_order_dict = saved_token_order.as_dict()
         trans_list = []

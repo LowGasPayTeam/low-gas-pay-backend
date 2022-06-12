@@ -1,5 +1,7 @@
 {
   "order_create_addr": "0x123456789",
+  "trans_begin_time": "2022-06-14T14:45:00.000Z",
+  "trans_end_time": "2022-06-14T15:00:00.000Z",
   "order_gas_type": "ntom",
   "transactions": [
     {
