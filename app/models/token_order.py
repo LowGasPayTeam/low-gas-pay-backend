@@ -20,22 +20,22 @@ class TokenOrder(BaseModel):
     trans_gas_fee_limit = db.Column(db.String(63), nullable=True)
     trans_begin_time = db.Column(db.TIMESTAMP(True), nullable=True)
     trans_end_time = db.Column(db.TIMESTAMP(True), nullable=True)
-    transactions = db.Column(db.TEXT, nullable=False)
+    transactions = db.relationship("TokenTxn", backref="TokenOrder", lazy=True)
 
 
-class Transaction(object):
-    def __init__(self, from_addr, to_addr, token_contract, token_amount):
-        self.from_addr = from_addr
-        self.to_addr = to_addr
-        self.token_contract = token_contract
-        self.token_amount = token_amount
-        self.trans_date = None
-        self.trans_status = None
-        self.trans_gas_used = None
-        self.trans_gas_paid_amount = None
-        self.trans_txn = None
-        self.trans_txn_id = None
-        self.trans_gas_txn_ratio = None
-
-    def to_json(self):
-        return json.dumps(self.__dict__)
+# class Transaction(object):
+#     def __init__(self, from_addr, to_addr, token_contract, token_amount):
+#         self.from_addr = from_addr
+#         self.to_addr = to_addr
+#         self.token_contract = token_contract
+#         self.token_amount = token_amount
+#         self.trans_date = None
+#         self.trans_status = None
+#         self.trans_gas_used = None
+#         self.trans_gas_paid_amount = None
+#         self.trans_txn = None
+#         self.trans_txn_id = None
+#         self.trans_gas_txn_ratio = None
+#
+#     def to_json(self):
+#         return json.dumps(self.__dict__)
