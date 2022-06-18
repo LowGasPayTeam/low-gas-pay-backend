@@ -5,8 +5,8 @@
 from datetime import datetime
 from flask import request
 from flask_restful import Resource, reqparse
-from app.models.token_order import TokenOrder
-from app.models.token_transaction import TokenTxn
+from app.models.nft_order import NFTOrder
+from app.models.nft_transaction import NFTTxn
 from common.validator import validator
 from common import response
 
@@ -16,12 +16,13 @@ POST_SCHEMA = {
     "type": "object",
     "properties": {
         "order_gas_type": {"type": "string"},
+        "order_create_addr": {"type": "string"},
         "transactions": {
             "type": "array",
             "items": {
                 "type": "object",
                 "properties": {
-                    "amount": {"type": "string"},
+                    "token_id": {"type": "string"},
                     "contract": {"type": "string"},
                     "from": {"type": "string"},
                     "to": {"type": "string"},
@@ -36,7 +37,7 @@ POST_SCHEMA = {
 }
 
 
-class TokenListApi(Resource):
+class NFTListApi(Resource):
     def __init__(self):
         self.parser = reqparse.RequestParser()
         self.parser.add_argument(
@@ -50,7 +51,6 @@ class TokenListApi(Resource):
 
     @response.wrap_response
     def get(self):
-
         params = self.parser.parse_args()
 
         filters = {}
@@ -69,47 +69,47 @@ class TokenListApi(Resource):
 
         if page and size:
             try:
-                pagination = TokenOrder.query.filter_by(**filters).paginate(
+                pagination = NFTOrder.query.filter_by(**filters).paginate(
                     page, per_page=size, error_out=False
                 )
-                total = TokenOrder.query.filter_by(**filters).count()
+                total = NFTOrder.query.filter_by(**filters).count()
 
             except Exception as e:
                 print(e)
                 return response.InternalServerError(
-                    f"Get Token Order From Address {address} Failed"
+                    f"Get NFT Order From Address {address} Failed"
                 )
 
             orders = list()
-            for token_order in pagination.items:
-                token_order_dict = token_order.as_dict()
+            for nft_order in pagination.items:
+                nft_order_dict = nft_order.as_dict()
                 trans_list = []
-                for item in token_order.transactions:
+                for item in nft_order.transactions:
                     trans_list.append(item.as_dict())
-                token_order_dict["transactions"] = trans_list
-                orders.append(token_order_dict)
+                nft_order_dict["transactions"] = trans_list
+                orders.append(nft_order_dict)
 
             resp = {"total": total, "orders": orders}
             return response.OK(None, resp)
         else:
             try:
-                items = TokenOrder.query.filter_by(**filters).all()
+                items = NFTOrder.query.filter_by(**filters).all()
                 total = len(items)
             except Exception as e:
                 print(e)
                 return response.InternalServerError(
-                    f"Get Token Order From Address {address} Failed"
+                    f"Get NFT Order From Address {address} Failed"
                 )
 
             orders = list()
-            for token_order in items:
-                print(token_order.transactions)
-                token_order_dict = token_order.as_dict()
+            for nft_order in items:
+                print(nft_order.transactions)
+                nft_order_dict = nft_order.as_dict()
                 trans_list = []
-                for item in token_order.transactions:
+                for item in nft_order.transactions:
                     trans_list.append(item.as_dict())
-                token_order_dict["transactions"] = trans_list
-                orders.append(token_order_dict)
+                nft_order_dict["transactions"] = trans_list
+                orders.append(nft_order_dict)
 
             resp = {"total": total, "orders": orders}
             return response.OK(None, resp)
@@ -139,7 +139,7 @@ class TokenListApi(Resource):
         print(trans_begin_time)
         print(trans_end_time)
 
-        token_order = TokenOrder(
+        nft_order = NFTOrder(
             order_status=ORDER_CREATED,
             order_gas_type=data.get("order_gas_type"),  # type: ignore
             order_create_addr=address,  # type: ignore
@@ -148,91 +148,91 @@ class TokenListApi(Resource):
         )
 
         for t in transactions:
-            txn = TokenTxn(
+            txn = NFTTxn(
                 from_addr=t.get("from_addr"),
                 to_addr=t.get("to_addr"),
                 token_contract=t.get("token_contract"),
-                token_amount=t.get("token_amount"),
+                token_id=t.get("token_id"),
             )
-            token_order.transactions.append(txn)
+            nft_order.transactions.append(txn)
 
         try:
-            token_order.save()
+            nft_order.save()
         except Exception as error:
             print(error)
-            return response.InternalServerError("Create Token Order Failed")
+            return response.InternalServerError("Create NFT Order Failed")
 
         try:
-            saved_token_order = TokenOrder.query.get(token_order.order_id)
+            saved_nft_order = NFTOrder.query.get(nft_order.order_id)
         except Exception as error:
-            return response.InternalServerError(f"Get Token Order {token_order.order_id} Error: {error}")
+            return response.InternalServerError(f"Get NFT Order {nft_order.order_id} Error: {error}")
 
-        if not saved_token_order:
-            return response.NotFound(f"Token Order {token_order.order_id} Not Found")
+        if not saved_nft_order:
+            return response.NotFound(f"NFT Order {nft_order.order_id} Not Found")
 
-        token_order_dict = saved_token_order.as_dict()
+        nft_order_dict = saved_nft_order.as_dict()
         trans_list = []
-        for item in token_order.transactions:
+        for item in nft_order.transactions:
             trans_list.append(item.as_dict())
-        token_order_dict["transactions"] = trans_list
-        return response.OK("Successful", token_order_dict)
+        nft_order_dict["transactions"] = trans_list
+        return response.OK("Successful", nft_order_dict)
 
 
-class TokenApi(Resource):
+class NFTApi(Resource):
     @response.wrap_response
     def get(self, id):
         try:
-            token_order = TokenOrder.query.get(id)
+            nft_order = NFTOrder.query.get(id)
         except Exception as error:
-            return response.InternalServerError(f"Get Token Order {id} Error: {error}")
+            return response.InternalServerError(f"Get NFT Order {id} Error: {error}")
 
-        if not token_order:
-            return response.NotFound(f"Token Order {id} Not Found")
+        if not nft_order:
+            return response.NotFound(f"NFT Order {id} Not Found")
 
-        token_order_dict = token_order.as_dict()
+        nft_order_dict = nft_order.as_dict()
         trans_list = []
-        for item in token_order.transactions:
+        for item in nft_order.transactions:
             trans_list.append(item.as_dict())
-        token_order_dict["transactions"] = trans_list
-        return response.OK("Successful", token_order_dict)
+        nft_order_dict["transactions"] = trans_list
+        return response.OK("Successful", nft_order_dict)
 
     @response.wrap_response
     def put(self, id):
         try:
-            token_order = TokenOrder.query.get(id)
+            nft_order = NFTOrder.query.get(id)
         except Exception as error:
-            return response.InternalServerError(f"Get Token Order {id} Error: {error}")
-        if not token_order:
-            return response.NotFound(f"Token Order {id} Not Found")
+            return response.InternalServerError(f"Get NFT Order {id} Error: {error}")
+        if not nft_order:
+            return response.NotFound(f"NFT Order {id} Not Found")
 
         data = request.get_json(force=True)  # type: ignore
         if not data:
             return response.BadRequest("Required Data Missing")
 
         try:
-            token_order_dict = token_order.as_dict()
+            nft_order_dict = nft_order.as_dict()
             for key, value in data.items():
-                if key in token_order_dict:
-                    setattr(token_order, key, value)
-            token_order.update()
+                if key in nft_order_dict:
+                    setattr(nft_order, key, value)
+            nft_order.update()
         except Exception as error:
             return response.InternalServerError(
-                f"Token Order {id} Update Failed, Error: {error}"
+                f"NFT Order {id} Update Failed, Error: {error}"
             )
-        return response.OK(f"Token Order {id} Update Success", None)
+        return response.OK(f"NFT Order {id} Update Success", None)
 
     @response.wrap_response
     def delete(self, id):
         try:
-            token_order = TokenOrder.query.get(id)
+            nft_order = NFTOrder.query.get(id)
         except Exception as error:
-            return response.InternalServerError(f"Get Token Order {id} Error: {error}")
-        if not token_order:
-            return response.NotFound(f"Token Order {id} Not Found")
+            return response.InternalServerError(f"Get NFT Order {id} Error: {error}")
+        if not nft_order:
+            return response.NotFound(f"NFT Order {id} Not Found")
 
         try:
-            token_order.delete()
+            nft_order.delete()
         except Exception as error:
-            return response.InternalServerError(f"Delete Token Order {id} Error: {error}")
+            return response.InternalServerError(f"Delete NFT Order {id} Error: {error}")
 
-        return response.OK(f"Token Order {id} Deleted", None)
+        return response.OK(f"NFT Order {id} Deleted", None)
