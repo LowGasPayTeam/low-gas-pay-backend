@@ -1,10 +1,10 @@
-# -*- coding=utf-8 -*-
+# coding=utf-8
 
 from app.models import BaseModel, db
 
 
-class TokenOrder(BaseModel):
-    __tablename__ = "token_order"
+class NFTOrder(BaseModel):
+    __tablename__ = "nft_order"
     order_id = db.Column(db.Integer, primary_key=True,
                          autoincrement=True, comment="id")
     order_status = db.Column(db.String(10), nullable=False)
@@ -16,4 +16,4 @@ class TokenOrder(BaseModel):
     trans_gas_fee_limit = db.Column(db.String(63), nullable=True)
     trans_begin_time = db.Column(db.TIMESTAMP(True), nullable=True)
     trans_end_time = db.Column(db.TIMESTAMP(True), nullable=True)
-    transactions = db.relationship("TokenTxn", backref="TokenOrder", lazy=True)
+    transactions = db.relationship("NFTTxn", backref="NFTOrder", lazy=True)
