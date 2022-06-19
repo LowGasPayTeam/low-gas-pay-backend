@@ -472,3 +472,355 @@ low gas pay backend
     "message": "Successful"
   }
   ```
+
+## NFT Order
+
+### 创建NFT Order
+
+- URL: `/api/v1/nfts`
+- METHOD: `POST`
+- Request
+    ```json
+    {
+      "order_create_addr": "0x123456789",
+      "trans_begin_time": "2022-06-14T14:45:00.000Z",
+      "trans_end_time": "2022-06-14T15:00:00.000Z",
+      "order_gas_type": "ntom",
+      "transactions": [
+        {
+          "from_addr": "0x123",
+          "to_addr": "0xabc",
+          "token_id": "8098",
+          "token_contract": "0xqwerqwerwr",
+          "trans_gas_paid_amount": "",
+          "trans_gas_paid_status": "",
+          "trans_gas_used": "",
+          "trans_status": ""
+        },
+        {
+          "from_addr": "0x123",
+          "to_addr": "0xabc",
+          "token_id": "9099",
+          "token_contract": "0xqwerqwerwr",
+          "trans_gas_paid_amount": "",
+          "trans_gas_paid_status": "",
+          "trans_gas_used": "",
+          "trans_status": ""
+        }
+      ]
+    }
+    ```
+
+- Response StatusCode: `200`, `400`, `500`
+- Response Data:
+    ```json
+    {
+        "code": 200,
+        "data": {
+            "created_at": "Sun, 19 Jun 2022 19:42:53 GMT",
+            "deleted": 0,
+            "order_create_addr": "0x123456789",
+            "order_exec_id": null,
+            "order_exec_status": null,
+            "order_gas_type": "ntom",
+            "order_id": 2,
+            "order_status": "Created",
+            "trans_begin_time": "Tue, 14 Jun 2022 14:45:00 GMT",
+            "trans_end_time": "Tue, 14 Jun 2022 15:00:00 GMT",
+            "trans_gas_fee_limit": null,
+            "trans_gas_fee_max": null,
+            "transactions": [
+                {
+                    "created_at": "Sun, 19 Jun 2022 19:42:53 GMT",
+                    "deleted": 0,
+                    "from_addr": "0x123",
+                    "order_id": 2,
+                    "to_addr": "0xabc",
+                    "token_contract": "0xqwerqwerwr",
+                    "token_date": null,
+                    "token_id": "8098",
+                    "trans_gas_paid_amount": null,
+                    "trans_gas_paid_status": null,
+                    "trans_gas_txn_rate": null,
+                    "trans_gas_used": null,
+                    "trans_id": null,
+                    "trans_status": null,
+                    "trans_txn": null,
+                    "txn_id": 3,
+                    "updated_at": "Sun, 19 Jun 2022 19:42:53 GMT"
+                },
+                {
+                    "created_at": "Sun, 19 Jun 2022 19:42:53 GMT",
+                    "deleted": 0,
+                    "from_addr": "0x123",
+                    "order_id": 2,
+                    "to_addr": "0xabc",
+                    "token_contract": "0xqwerqwerwr",
+                    "token_date": null,
+                    "token_id": "9099",
+                    "trans_gas_paid_amount": null,
+                    "trans_gas_paid_status": null,
+                    "trans_gas_txn_rate": null,
+                    "trans_gas_used": null,
+                    "trans_id": null,
+                    "trans_status": null,
+                    "trans_txn": null,
+                    "txn_id": 4,
+                    "updated_at": "Sun, 19 Jun 2022 19:42:53 GMT"
+                }
+            ],
+            "updated_at": "Sun, 19 Jun 2022 19:42:53 GMT"
+        },
+        "message": "Successful"
+    }
+    ```
+
+### 查询NFT Order
+
+- URL: `/api/v1/nfts?page={page number}&size=${page size}&address={wallet address}`
+- METHOD: `GET`
+- Response StatusCode: `200`, `400`, `500`
+- Response Data:
+    ```json
+    {
+        "code": 200,
+        "data": {
+            "created_at": "Sun, 19 Jun 2022 19:42:53 GMT",
+            "deleted": 0,
+            "order_create_addr": "0x123456789",
+            "order_exec_id": null,
+            "order_exec_status": null,
+            "order_gas_type": "ntom",
+            "order_id": 2,
+            "order_status": "Created",
+            "trans_begin_time": "Tue, 14 Jun 2022 14:45:00 GMT",
+            "trans_end_time": "Tue, 14 Jun 2022 15:00:00 GMT",
+            "trans_gas_fee_limit": null,
+            "trans_gas_fee_max": null,
+            "transactions": [
+                {
+                    "created_at": "Sun, 19 Jun 2022 19:42:53 GMT",
+                    "deleted": 0,
+                    "from_addr": "0x123",
+                    "order_id": 2,
+                    "to_addr": "0xabc",
+                    "token_contract": "0xqwerqwerwr",
+                    "token_date": null,
+                    "token_id": "8098",
+                    "trans_gas_paid_amount": null,
+                    "trans_gas_paid_status": null,
+                    "trans_gas_txn_rate": null,
+                    "trans_gas_used": null,
+                    "trans_id": null,
+                    "trans_status": null,
+                    "trans_txn": null,
+                    "txn_id": 3,
+                    "updated_at": "Sun, 19 Jun 2022 19:42:53 GMT"
+                },
+                {
+                    "created_at": "Sun, 19 Jun 2022 19:42:53 GMT",
+                    "deleted": 0,
+                    "from_addr": "0x123",
+                    "order_id": 2,
+                    "to_addr": "0xabc",
+                    "token_contract": "0xqwerqwerwr",
+                    "token_date": null,
+                    "token_id": "9099",
+                    "trans_gas_paid_amount": null,
+                    "trans_gas_paid_status": null,
+                    "trans_gas_txn_rate": null,
+                    "trans_gas_used": null,
+                    "trans_id": null,
+                    "trans_status": null,
+                    "trans_txn": null,
+                    "txn_id": 4,
+                    "updated_at": "Sun, 19 Jun 2022 19:42:53 GMT"
+                }
+            ],
+            "updated_at": "Sun, 19 Jun 2022 19:42:53 GMT"
+        },
+        "message": "Successful"
+    }
+    ```
+
+### 获取单个 NFT Order
+- URL: `/api/v1/nfts/{nft order id}`
+- METHOD: `GET`
+- Response StatusCode: `200`, `400`, `500`
+- Response Data:
+  ```json
+    {
+        "code": 200,
+        "data": {
+            "created_at": "Sun, 19 Jun 2022 19:42:53 GMT",
+            "deleted": 0,
+            "order_create_addr": "0x123456789",
+            "order_exec_id": null,
+            "order_exec_status": null,
+            "order_gas_type": "ntom",
+            "order_id": 2,
+            "order_status": "Created",
+            "trans_begin_time": "Tue, 14 Jun 2022 14:45:00 GMT",
+            "trans_end_time": "Tue, 14 Jun 2022 15:00:00 GMT",
+            "trans_gas_fee_limit": null,
+            "trans_gas_fee_max": null,
+            "transactions": [
+                {
+                    "created_at": "Sun, 19 Jun 2022 19:42:53 GMT",
+                    "deleted": 0,
+                    "from_addr": "0x123",
+                    "order_id": 2,
+                    "to_addr": "0xabc",
+                    "token_contract": "0xqwerqwerwr",
+                    "token_date": null,
+                    "token_id": "8098",
+                    "trans_gas_paid_amount": null,
+                    "trans_gas_paid_status": null,
+                    "trans_gas_txn_rate": null,
+                    "trans_gas_used": null,
+                    "trans_id": null,
+                    "trans_status": null,
+                    "trans_txn": null,
+                    "txn_id": 3,
+                    "updated_at": "Sun, 19 Jun 2022 19:42:53 GMT"
+                },
+                {
+                    "created_at": "Sun, 19 Jun 2022 19:42:53 GMT",
+                    "deleted": 0,
+                    "from_addr": "0x123",
+                    "order_id": 2,
+                    "to_addr": "0xabc",
+                    "token_contract": "0xqwerqwerwr",
+                    "token_date": null,
+                    "token_id": "9099",
+                    "trans_gas_paid_amount": null,
+                    "trans_gas_paid_status": null,
+                    "trans_gas_txn_rate": null,
+                    "trans_gas_used": null,
+                    "trans_id": null,
+                    "trans_status": null,
+                    "trans_txn": null,
+                    "txn_id": 4,
+                    "updated_at": "Sun, 19 Jun 2022 19:42:53 GMT"
+                }
+            ],
+            "updated_at": "Sun, 19 Jun 2022 19:42:53 GMT"
+        },
+        "message": "Successful"
+    }
+  ```
+
+### 删除 Token Order
+
+- URL: `/api/v1/nfts/{nft order id}`
+- METHOD: `DELETE`
+- Response StatusCode: `200`, `400`, `500`
+- Response Data:
+  ```json
+  {
+    "code": 200,
+    "data": null,
+    "message": "NFT Order 10 Deleted"
+  }
+  ```
+
+### 修改 NFT Order
+
+- URL: `/api/v1/nfts/{nft order id}`
+- METHOD: `PUT`
+- Request Data:
+  ```json
+  {
+    "order_create_addr": "0xabcdefg",
+    "order_exec_id": null,
+    "order_exec_status": null,
+    "order_gas_type": "ntom",
+    "order_status": "Created",
+    "trans_begin_time": null,
+    "trans_end_time": null,
+    "trans_gas_fee_limit": null,
+    "trans_gas_fee_max": null
+  }
+  ```
+- Response StatusCode: `200`, `400`, `500`
+- Response Data:
+  ```json
+  {
+    "code": 200,
+    "data": null,
+    "message": "NFT Order 10 Update Success"
+  }
+  ```
+
+## NFT Token Transaction
+
+### 获取 NFT txn
+
+- URL: `/api/v1/nft_txn/{txn_id}`
+- METHOD: `GET`
+- Response StatusCode: `200`, `400`, `500`
+- Response Data:
+  ```json
+  {
+    "code": 200,
+    "data": {
+      "created_at": "Sun, 12 Jun 2022 16:27:39 GMT",
+      "deleted": 0,
+      "from_addr": "0x123",
+      "order_id": 13,
+      "to_addr": "0xabc",
+      "token_id": "8090",
+      "token_contract": "0xqwerqwerwr",
+      "token_date": null,
+      "trans_gas_paid_amount": null,
+      "trans_gas_paid_status": null,
+      "trans_gas_txn_rate": null,
+      "trans_gas_used": null,
+      "trans_id": null,
+      "trans_status": "Deleted",
+      "trans_txn": null,
+      "txn_id": 1,
+      "updated_at": "Sun, 12 Jun 2022 17:09:47 GMT"
+    },
+    "message": "Successful"
+  }
+  ```
+
+### 修改txn
+
+- URL: `/api/v1/txn/{txn_id}`
+- METHOD: `PUt`
+- Request
+    ```json
+    {
+      "trans_status": "Succeed"
+    }
+    ```
+
+- Response StatusCode: `200`, `400`, `500`
+- Response Data:
+  ```json
+  {
+    "code": 200,
+    "data": {
+      "created_at": "Sun, 12 Jun 2022 16:27:39 GMT",
+      "deleted": 0,
+      "from_addr": "0x123",
+      "order_id": 13,
+      "to_addr": "0xabc",
+      "token_id": "1090",
+      "token_contract": "0xqwerqwerwr",
+      "token_date": null,
+      "trans_gas_paid_amount": null,
+      "trans_gas_paid_status": null,
+      "trans_gas_txn_rate": null,
+      "trans_gas_used": null,
+      "trans_id": null,
+      "trans_status": "Succeed",
+      "trans_txn": null,
+      "txn_id": 1,
+      "updated_at": "Sun, 12 Jun 2022 17:09:47 GMT"
+    },
+    "message": "Successful"
+  }
+  ```
