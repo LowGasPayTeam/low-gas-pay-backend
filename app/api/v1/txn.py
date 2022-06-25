@@ -4,18 +4,20 @@
 
 from flask import request
 from flask_restful import Resource
+
 from app.models.token_transaction import TokenTxn
 from common import response
 
 
 class TxnApi(Resource):
-
     @response.wrap_response
     def get(self, id):
         try:
             token_txn = TokenTxn.query.get(id)
         except Exception as error:
-            return response.InternalServerError(f"Get Token Transaction {id} Error: {error}")
+            return response.InternalServerError(
+                f"Get Token Transaction {id} Error: {error}"
+            )
 
         if not token_txn:
             return response.NotFound(f"Token Transaction {id} Not Found")
@@ -26,7 +28,9 @@ class TxnApi(Resource):
         try:
             token_txn = TokenTxn.query.get(id)
         except Exception as error:
-            return response.InternalServerError(f"Get Token Transaction {id} Error: {error}")
+            return response.InternalServerError(
+                f"Get Token Transaction {id} Error: {error}"
+            )
         if not token_txn:
             return response.NotFound(f"Token Transaction {id} Not Found")
 

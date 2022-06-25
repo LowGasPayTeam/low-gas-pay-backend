@@ -1,14 +1,16 @@
 # coding=utf-8
 # pyright: reportUndefinedVariable=false, reportGeneralTypeIssues=false
 
-# import logging
+import logging
 from datetime import datetime
+
 from flask import request
 from flask_restful import Resource, reqparse
+
 from app.models.nft_order import NFTOrder
 from app.models.nft_transaction import NFTTxn
-from common.validator import validator
 from common import response
+from common.validator import validator
 
 ORDER_CREATED = "Created"
 
@@ -17,37 +19,52 @@ POST_SCHEMA = {
     "properties": {
         "order_gas_type": {"type": "string"},
         "order_create_addr": {"type": "string"},
+        "trans_begin_time": {"type": "string"},
+        "trans_end_time": {"type": "string"},
+        "trans_gas_fee_limit": {"type": "string"},
+        "trans_gas_fee_max": {"type": "string"},
         "transactions": {
             "type": "array",
             "items": {
                 "type": "object",
                 "properties": {
                     "token_id": {"type": "string"},
-                    "contract": {"type": "string"},
-                    "from": {"type": "string"},
-                    "to": {"type": "string"},
-                    "status": {"type": "string"},
-                    "gas_paid_amount": {"type": "string"},
-                    "gas_paid_status": {"type": "string"},
-                    "gas_used": {"type": "string"},
+                    "token_contract": {"type": "string"},
+                    "from_addr": {"type": "string"},
+                    "to_addr": {"type": "string"},
+                    "trans_status": {"type": "string"},
+                    "trans_gas_paid_amount": {"type": "string"},
+                    "trans_gas_paid_status": {"type": "string"},
+                    "trans_gas_used": {"type": "string"},
                 },
+                "required": [
+                    "token_id",
+                    "token_contract",
+                    "from_addr",
+                    "to_addr",
+                ],
             },
         },
     },
+    "required": [
+        "order_gas_type",
+        "order_create_addr",
+        "trans_begin_time",
+        "trans_end_time",
+        "trans_gas_fee_limit",
+        "trans_gas_fee_max",
+        "transactions",
+    ],
 }
 
 
 class NFTListApi(Resource):
     def __init__(self):
         self.parser = reqparse.RequestParser()
-        self.parser.add_argument(
-            "page", type=int, required=False, location="args")
-        self.parser.add_argument(
-            "size", type=int, required=False, location="args")
-        self.parser.add_argument(
-            "address", type=str, required=False, location="args")
-        self.parser.add_argument(
-            "status", type=str, required=False, location="args")
+        self.parser.add_argument("page", type=int, required=False, location="args")
+        self.parser.add_argument("size", type=int, required=False, location="args")
+        self.parser.add_argument("address", type=str, required=False, location="args")
+        self.parser.add_argument("status", type=str, required=False, location="args")
 
     @response.wrap_response
     def get(self):
@@ -73,9 +90,8 @@ class NFTListApi(Resource):
                     page, per_page=size, error_out=False
                 )
                 total = NFTOrder.query.filter_by(**filters).count()
-
             except Exception as e:
-                print(e)
+                logging.error(f"Get NFT Order Error: {e}")
                 return response.InternalServerError(
                     f"Get NFT Order From Address {address} Failed"
                 )
@@ -96,7 +112,7 @@ class NFTListApi(Resource):
                 items = NFTOrder.query.filter_by(**filters).all()
                 total = len(items)
             except Exception as e:
-                print(e)
+                logging.error(f"Get NFT Order Error: {e}")
                 return response.InternalServerError(
                     f"Get NFT Order From Address {address} Failed"
                 )
@@ -112,6 +128,7 @@ class NFTListApi(Resource):
                 orders.append(nft_order_dict)
 
             resp = {"total": total, "orders": orders}
+            logging.info(f"Get NFT Order By Address: {address}")
             return response.OK(None, resp)
 
     @response.wrap_response
@@ -119,32 +136,35 @@ class NFTListApi(Resource):
     def post(self):
         data = request.get_json(force=True)  # type: ignore
 
-        if (
-            "order_gas_type" not in data
-            or "order_create_addr" not in data  # type: ignore
-            or "transactions" not in data  # type: ignore
-            or "trans_begin_time" not in data # type: ignore
-            or "trans_end_time" not in data  # ta # type: ignore
-        ):
-            return response.BadRequest("Required Feild Missing")
+        # if (
+        #     "order_gas_type" not in data
+        #     or "order_create_addr" not in data  # type: ignore
+        #     or "transactions" not in data  # type: ignore
+        #     or "trans_begin_time" not in data  # type: ignore
+        #     or "trans_end_time" not in data  # ta # type: ignore
+        # ):
+        #     return response.BadRequest("Required Feild Missing")
 
         address = data.get("order_create_addr")  # type: ignore
         transactions = data.get("transactions")  # type: ignore
 
         trans_begin_time = datetime.strptime(
-            data.get("trans_begin_time"), "%Y-%m-%dT%H:%M:%S.%fZ")  # type: ignore
+            data.get("trans_begin_time"), "%Y-%m-%dT%H:%M:%S.%fZ"
+        )  # type: ignore
         trans_end_time = datetime.strptime(
-            data.get("trans_end_time"), "%Y-%m-%dT%H:%M:%S.%fZ")  # type: ignore
-
-        print(trans_begin_time)
-        print(trans_end_time)
+            data.get("trans_end_time"), "%Y-%m-%dT%H:%M:%S.%fZ"
+        )  # type: ignore
+        trans_gas_fee_limit = data.get("trans_gas_fee_limit")
+        trans_gas_fee_max = data.get("trans_gas_fee_max")
 
         nft_order = NFTOrder(
             order_status=ORDER_CREATED,
             order_gas_type=data.get("order_gas_type"),  # type: ignore
             order_create_addr=address,  # type: ignore
             trans_begin_time=trans_begin_time,
-            trans_end_time=trans_end_time
+            trans_end_time=trans_end_time,
+            trans_gas_fee_limit=trans_gas_fee_limit,
+            trans_gas_fee_max=trans_gas_fee_max,
         )
 
         for t in transactions:
@@ -165,7 +185,9 @@ class NFTListApi(Resource):
         try:
             saved_nft_order = NFTOrder.query.get(nft_order.order_id)
         except Exception as error:
-            return response.InternalServerError(f"Get NFT Order {nft_order.order_id} Error: {error}")
+            return response.InternalServerError(
+                f"Get NFT Order {nft_order.order_id} Error: {error}"
+            )
 
         if not saved_nft_order:
             return response.NotFound(f"NFT Order {nft_order.order_id} Not Found")
@@ -214,6 +236,8 @@ class NFTApi(Resource):
             for key, value in data.items():
                 if key in nft_order_dict:
                     setattr(nft_order, key, value)
+                else:
+                    logging.warn(f"Undefined Feild: {key}")
             nft_order.update()
         except Exception as error:
             return response.InternalServerError(
