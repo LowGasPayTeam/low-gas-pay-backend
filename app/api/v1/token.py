@@ -18,7 +18,10 @@ POST_SCHEMA = {
     "type": "object",
     "properties": {
         "order_gas_type": {"type": "string"},
-        "order_create_addr": {"type": "string"},
+        "order_create_addr": {
+            "type": "string",
+            "pattern": "^0x[a-fA-F0-9]{40}$",
+        },
         "trans_begin_time": {"type": "string"},
         "trans_end_time": {"type": "string"},
         "trans_gas_fee_limit": {"type": "string"},
@@ -29,9 +32,18 @@ POST_SCHEMA = {
                 "type": "object",
                 "properties": {
                     "token_amount": {"type": "string"},
-                    "token_contract": {"type": "string"},
-                    "from_addr": {"type": "string"},
-                    "to_addr": {"type": "string"},
+                    "token_contract": {
+                        "type": "string",
+                        "pattern": "^0x[a-fA-F0-9]{40}$"
+                    },
+                    "from_addr": {
+                        "type": "string",
+                        "pattern": "^0x[a-fA-F0-9]{40}$"
+                    },
+                    "to_addr": {
+                        "type": "string",
+                        "pattern": "^0x[a-fA-F0-9]{40}$"
+                    },
                     "trans_status": {"type": "string"},
                     "trans_gas_paid_amount": {"type": "string"},
                     "trans_gas_paid_status": {"type": "string"},
