@@ -29,6 +29,8 @@ POST_SCHEMA = {
                 "type": "object",
                 "properties": {
                     "token_id": {"type": "string"},
+                    "token_name": {"type": "string"},
+                    "collection_name": {"type": "string"},
                     "token_contract": {"type": "string", "pattern": "^0x[a-fA-F0-9]{40}$"},
                     "from_addr": {"type": "string", "pattern": "^0x[a-fA-F0-9]{40}$"},
                     "to_addr": {"type": "string", "pattern": "^0x[a-fA-F0-9]{40}$"},
@@ -39,6 +41,8 @@ POST_SCHEMA = {
                 },
                 "required": [
                     "token_id",
+                    "token_name",
+                    "collection_name",
                     "token_contract",
                     "from_addr",
                     "to_addr",
@@ -173,6 +177,8 @@ class NFTListApi(Resource):
                 to_addr=t.get("to_addr"),
                 token_contract=t.get("token_contract"),
                 token_id=t.get("token_id"),
+                token_name=t.get("token_name"),
+                collection_name=t.get("collection_name"),
             )
             nft_order.transactions.append(txn)
 

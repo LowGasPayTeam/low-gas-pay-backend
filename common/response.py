@@ -30,7 +30,7 @@ class OK(Response):
 
 class BadRequest(Response):
     def __init__(self, message):
-        super(BadRequest, self).__init__(403, message, None)
+        super(BadRequest, self).__init__(400, message, None)
 
 
 class InternalServerError(Response):
