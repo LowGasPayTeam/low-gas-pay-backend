@@ -2,7 +2,7 @@
 
 from flask import request
 from jsonschema import validate
-from jsonschema.exceptions import SchemaError,ValidationError
+from jsonschema.exceptions import SchemaError, ValidationError
 from common.response import *
 
 
