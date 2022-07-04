@@ -1,10 +1,10 @@
 # coding=utf-8
 # pyright: reportUndefinedVariable=false, reportGeneralTypeIssues=false
 
-import logging
+# import current_app.logger
 from datetime import datetime
 
-from flask import request
+from flask import current_app, request
 from flask_restful import Resource, reqparse
 
 from app.models.token_order import TokenOrder
@@ -34,16 +34,10 @@ POST_SCHEMA = {
                     "token_amount": {"type": "string"},
                     "token_contract": {
                         "type": "string",
-                        "pattern": "^0x[a-fA-F0-9]{40}$"
+                        "pattern": "^0x[a-fA-F0-9]{40}$",
                     },
-                    "from_addr": {
-                        "type": "string",
-                        "pattern": "^0x[a-fA-F0-9]{40}$"
-                    },
-                    "to_addr": {
-                        "type": "string",
-                        "pattern": "^0x[a-fA-F0-9]{40}$"
-                    },
+                    "from_addr": {"type": "string", "pattern": "^0x[a-fA-F0-9]{40}$"},
+                    "to_addr": {"type": "string", "pattern": "^0x[a-fA-F0-9]{40}$"},
                     "trans_status": {"type": "string"},
                     "trans_gas_paid_amount": {"type": "string"},
                     "trans_gas_paid_status": {"type": "string"},
@@ -105,7 +99,7 @@ class TokenListApi(Resource):
                 total = TokenOrder.query.filter_by(**filters).count()
 
             except Exception as e:
-                logging.error(f"Get Token Order Error: {e}")
+                current_app.logger.error(f"Get Token Order Error: {e}")
                 return response.InternalServerError(
                     f"Get Token Order From Address {address} Failed"
                 )
@@ -120,14 +114,13 @@ class TokenListApi(Resource):
                 orders.append(token_order_dict)
 
             resp = {"total": total, "orders": orders}
-            logging.info(f"Get Token Order By {address}")
             return response.OK(None, resp)
         else:
             try:
                 items = TokenOrder.query.filter_by(**filters).all()
                 total = len(items)
             except Exception as e:
-                logging.error(f"Get Token Order Error: {e}")
+                current_app.logger.error(f"Get Token Order Error: {e}")
                 return response.InternalServerError(
                     f"Get Token Order From Address {address} Failed"
                 )
@@ -143,7 +136,6 @@ class TokenListApi(Resource):
                 orders.append(token_order_dict)
 
             resp = {"total": total, "orders": orders}
-            logging.info(f"Get Token Order By {address}")
             return response.OK(None, resp)
 
     @response.wrap_response
@@ -184,17 +176,21 @@ class TokenListApi(Resource):
         try:
             token_order.save()
         except Exception as error:
-            print(error)
-            return response.InternalServerError("Create Token Order Failed")
+            current_app.logger.error(f"Create Token Order Error: {error}")
+            return response.InternalServerError(f"Create Token Order Error: {error}")
 
         try:
             saved_token_order = TokenOrder.query.get(token_order.order_id)
         except Exception as error:
+            current_app.logger.error(
+                f"Get Token Order {token_order.order_id} Error: {error}"
+            )
             return response.InternalServerError(
                 f"Get Token Order {token_order.order_id} Error: {error}"
             )
 
         if not saved_token_order:
+            current_app.logger.error(f"Token Order {token_order.order_id} Not Found")
             return response.NotFound(f"Token Order {token_order.order_id} Not Found")
 
         token_order_dict = saved_token_order.as_dict()
@@ -202,7 +198,6 @@ class TokenListApi(Resource):
         for item in token_order.transactions:
             trans_list.append(item.as_dict())
         token_order_dict["transactions"] = trans_list
-        logging.info(f"Token Order {saved_token_order.order_id} Created")
         return response.OK("Successful", token_order_dict)
 
 
@@ -212,9 +207,11 @@ class TokenApi(Resource):
         try:
             token_order = TokenOrder.query.get(id)
         except Exception as error:
+            current_app.logger.error(f"Get Token Order {id} Error: {error}")
             return response.InternalServerError(f"Get Token Order {id} Error: {error}")
 
         if not token_order:
+            current_app.logger.error(f"Token Order {id} Not Found")
             return response.NotFound(f"Token Order {id} Not Found")
 
         token_order_dict = token_order.as_dict()
@@ -229,12 +226,15 @@ class TokenApi(Resource):
         try:
             token_order = TokenOrder.query.get(id)
         except Exception as error:
+            current_app.logger.error(f"Get Token Order {id} Error: {error}")
             return response.InternalServerError(f"Get Token Order {id} Error: {error}")
         if not token_order:
+            current_app.logger.error(f"Token Order {id} Not Found")
             return response.NotFound(f"Token Order {id} Not Found")
 
         data = request.get_json(force=True)  # type: ignore
         if not data:
+            current_app.logger.error("Required Data Missing")
             return response.BadRequest("Required Data Missing")
 
         try:
@@ -243,9 +243,10 @@ class TokenApi(Resource):
                 if key in token_order_dict:
                     setattr(token_order, key, value)
                 else:
-                    logging.warn(f"Undefined Feild: {key}")
+                    current_app.logger.warn(f"Undefined Feild: {key}")
             token_order.update()
         except Exception as error:
+            current_app.logger.error(f"Token Order {id} Update Failed, Error: {error}")
             return response.InternalServerError(
                 f"Token Order {id} Update Failed, Error: {error}"
             )
@@ -256,13 +257,16 @@ class TokenApi(Resource):
         try:
             token_order = TokenOrder.query.get(id)
         except Exception as error:
+            current_app.logger.error(f"Get Token Order {id} Error: {error}")
             return response.InternalServerError(f"Get Token Order {id} Error: {error}")
         if not token_order:
+            current_app.logger.error(f"Token Order {id} Not Found")
             return response.NotFound(f"Token Order {id} Not Found")
 
         try:
             token_order.delete()
         except Exception as error:
+            current_app.logger.error(f"Delete Token Order {id} Error: {error}")
             return response.InternalServerError(
                 f"Delete Token Order {id} Error: {error}"
             )

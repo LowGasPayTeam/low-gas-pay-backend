@@ -12,7 +12,8 @@ class GasApi(Resource):
     def get(self):
         gasRes = get_gas()
         if gasRes is None:
-            return response.InternalServerError("Get Gas Error")
+            current_app.logger.error("Get Gas Failed")
+            return response.InternalServerError("Get Gas Failed")
         low, mid, high, suggest = gas_level(gasRes)
         gas = dict(low=low, mid=mid, high=high, suggest=suggest)
         return response.OK("Success", gas)
