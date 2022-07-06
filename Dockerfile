@@ -11,4 +11,4 @@ COPY --from=compile-image /opt/venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH" FLASK_ENV="PRD"
 WORKDIR /low-gas-pay-backend
 COPY . .
-CMD ["gunicorn","-w","4","-b","0.0.0.0:9999","--log-level=info","--access-logfile","-","run:app"]
+CMD ["gunicorn","-w","4","-b","0.0.0.0:9999","--log-level=info","--access-logfile","./log/access.log","--error-logfile","./log/error.log","run:app"]
