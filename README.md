@@ -824,3 +824,52 @@ low gas pay backend
     "message": "Successful"
   }
   ```
+
+### 添加NFT合约
+- URL: `/api/v1/contracts`
+- METHOD: `POST`
+- Request
+    ```json
+    {
+      "contract": "0xED5AF388653567Af2F388E6224dC7C4b3241C544"
+    }
+    ```
+- Response StatusCode: `200`, `400`, `500`
+- Response Data:
+  ```json
+    {
+        "code": 200,
+        "data": {
+            "contract": "0xED5AF388653567Af2F388E6224dC7C4b3241C544",
+            "contract_id": 3,
+            "created_at": "Wed, 06 Jul 2022 00:46:21 GMT",
+            "deleted": 0,
+            "updated_at": "Wed, 06 Jul 2022 00:46:21 GMT"
+        },
+        "message": null
+    }
+  ```
+
+### 获取NFT合约列表
+- URL: `/api/v1/contracts`
+- METHOD: `GET`
+- Response StatusCode: `200`, `400`, `500`
+- Response Data:
+  ```json
+  [
+    "0xED5AF388653567Af2F388E6224dC7C4b3241C544"
+  ]
+  ```
+
+### 删除NFT合约
+- URL: `/api/v1/contracts/{contract}`
+- METHOD: `DELETE`
+- Response StatusCode: `200`, `404`, `500`
+- Response Data:
+  ```json
+    {
+        "code": 200,
+        "data": null,
+        "message": "Contract {contract} Deleted"
+    }
+  ```

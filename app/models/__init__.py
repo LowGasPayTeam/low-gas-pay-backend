@@ -107,17 +107,25 @@ class BaseModel(db.Model):
             db.session.rollback()
             raise TypeError("save_all error {}".format(str(e)))
 
-    def delete(self):
+    def delete(self, force=False):
         """
         逻辑删除
         :return:
         """
-        try:
-            self.deleted = DELETED
-            db.session.commit()
-        except BaseException as e:
-            db.session.rollback()
-            raise TypeError("delete error {}".format(str(e)))
+        if force:
+            try:
+                db.session.delete(self)
+                db.session.commit()
+            except BaseException as e:
+                db.session.rollback()
+                raise TypeError("delete error {}".format(str(e)))
+        else:
+            try:
+                self.deleted = DELETED
+                db.session.commit()
+            except BaseException as e:
+                db.session.rollback()
+                raise TypeError("delete error {}".format(str(e)))
 
     def update(self):
         try:
