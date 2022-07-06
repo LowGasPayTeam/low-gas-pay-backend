@@ -1,5 +1,7 @@
 # coding=utf-8
 
+import json
+
 from flask import make_response
 
 
@@ -30,7 +32,7 @@ class OK(Response):
 
 class BadRequest(Response):
     def __init__(self, message):
-        super(BadRequest, self).__init__(403, message, None)
+        super(BadRequest, self).__init__(400, message, None)
 
 
 class InternalServerError(Response):
@@ -41,3 +43,15 @@ class InternalServerError(Response):
 class NotFound(Response):
     def __init__(self, message):
         super(NotFound, self).__init__(404, message, None)
+
+
+class Raw:
+    def __init__(self, code, raw_data):
+        if type(raw_data) == dict or type(raw_data) == list:
+            self.data = raw_data
+            self.code = code
+        else:
+            raise TypeError("Raw Response Only Support Dict or List Object")
+
+    def to_dict(self):
+        return json.dumps(self.data)

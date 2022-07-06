@@ -1,28 +1,34 @@
 {
-  "order_create_addr": "0x123456789",
-  "trans_begin_time": "2022-06-14T14:45:00.000Z",
-  "trans_end_time": "2022-06-14T15:00:00.000Z",
-  "order_gas_type": "ntom",
-  "transactions": [
-    {
-      "from_addr": "0x123",
-      "to_addr": "0xabc",
-      "token_id": "8098",
-      "token_contract": "0xqwerqwerwr",
-      "trans_gas_paid_amount": "",
-      "trans_gas_paid_status": "",
-      "trans_gas_used": "",
-      "trans_status": ""
-    },
-    {
-      "from_addr": "0x123",
-      "to_addr": "0xabc",
-      "token_id": "9099",
-      "token_contract": "0xqwerqwerwr",
-      "trans_gas_paid_amount": "",
-      "trans_gas_paid_status": "",
-      "trans_gas_used": "",
-      "trans_status": ""
-    }
-  ]
+    "order_create_addr": "0x4d847754228968316712f34df9e99d47f59b1133",
+    "trans_begin_time": "2022-06-14T14:45:00.000Z",
+    "trans_end_time": "2022-06-14T15:00:00.000Z",
+    "trans_gas_fee_limit": "200",
+    "trans_gas_fee_max": "100",
+    "order_gas_type": "ntom",
+    "transactions": [
+        {
+            "from_addr": "0x4d847754228968316712f34df9e99d47f59b1133",
+            "to_addr": "0x4d847754228968316712f34df9e99d47f59b1133",
+            "token_id": "8098",
+            "token_name": "abc",
+            "collection_name": "good",
+            "token_contract": "0x4d847754228968316712f34df9e99d47f59b1133",
+            "trans_gas_paid_amount": "",
+            "trans_gas_paid_status": "",
+            "trans_gas_used": "",
+            "trans_status": ""
+        },
+        {
+            "from_addr": "0x4d847754228968316712f34df9e99d47f59b1133",
+            "to_addr": "0x4d847754228968316712f34df9e99d47f59b1133",
+            "token_id": "9099",
+            "token_name": "abc",
+            "collection_name": "good",
+            "token_contract": "0x4d847754228968316712f34df9e99d47f59b1133",
+            "trans_gas_paid_amount": "",
+            "trans_gas_paid_status": "",
+            "trans_gas_used": "",
+            "trans_status": ""
+        }
+    ]
 }

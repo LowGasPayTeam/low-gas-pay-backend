@@ -2,22 +2,26 @@
 # pyright: reportUndefinedVariable=false, reportGeneralTypeIssues=false
 #
 
-from flask import request
+from flask import current_app, request
 from flask_restful import Resource
+
 from app.models.nft_transaction import NFTTxn
 from common import response
 
 
 class NFTTxnApi(Resource):
-
     @response.wrap_response
     def get(self, id):
         try:
             nft_txn = NFTTxn.query.get(id)
         except Exception as error:
-            return response.InternalServerError(f"Get NFT Transaction {id} Error: {error}")
+            current_app.logger.error(f"Get NFT Transaction {id} Error: {error}")
+            return response.InternalServerError(
+                f"Get NFT Transaction {id} Error: {error}"
+            )
 
         if not nft_txn:
+            current_app.logger.error(f"NFT Transaction {id} Not Found")
             return response.NotFound(f"NFT Transaction {id} Not Found")
         return response.OK("Successful", nft_txn.as_dict())
 
@@ -26,12 +30,17 @@ class NFTTxnApi(Resource):
         try:
             nft_txn = NFTTxn.query.get(id)
         except Exception as error:
-            return response.InternalServerError(f"Get NFT Transaction {id} Error: {error}")
+            current_app.logger.error(f"Get NFT Transaction {id} Error: {error}")
+            return response.InternalServerError(
+                f"Get NFT Transaction {id} Error: {error}"
+            )
         if not nft_txn:
+            current_app.logger.error(f"NFT Transaction {id} Not Found")
             return response.NotFound(f"NFT Transaction {id} Not Found")
 
         data = request.get_json(force=True)  # type: ignore
         if not data:
+            current_app.logger.error("Required Data Missing")
             return response.BadRequest("Required Data Missing")
 
         try:
@@ -41,6 +50,9 @@ class NFTTxnApi(Resource):
                     setattr(nft_txn, key, value)
             nft_txn.update()
         except Exception as error:
+            current_app.logger.error(
+                f"NFT Transaction {id} Update Failed, Error: {error}"
+            )
             return response.InternalServerError(
                 f"NFT Transaction {id} Update Failed, Error: {error}"
             )

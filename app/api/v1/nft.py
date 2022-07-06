@@ -1,10 +1,10 @@
 # coding=utf-8
 # pyright: reportUndefinedVariable=false, reportGeneralTypeIssues=false
 
-import logging
+# import logging
 from datetime import datetime
 
-from flask import request
+from flask import current_app, request
 from flask_restful import Resource, reqparse
 
 from app.models.nft_order import NFTOrder
@@ -29,7 +29,12 @@ POST_SCHEMA = {
                 "type": "object",
                 "properties": {
                     "token_id": {"type": "string"},
-                    "token_contract": {"type": "string", "pattern": "^0x[a-fA-F0-9]{40}$"},
+                    "token_name": {"type": "string"},
+                    "collection_name": {"type": "string"},
+                    "token_contract": {
+                        "type": "string",
+                        "pattern": "^0x[a-fA-F0-9]{40}$",
+                    },
                     "from_addr": {"type": "string", "pattern": "^0x[a-fA-F0-9]{40}$"},
                     "to_addr": {"type": "string", "pattern": "^0x[a-fA-F0-9]{40}$"},
                     "trans_status": {"type": "string"},
@@ -39,6 +44,8 @@ POST_SCHEMA = {
                 },
                 "required": [
                     "token_id",
+                    "token_name",
+                    "collection_name",
                     "token_contract",
                     "from_addr",
                     "to_addr",
@@ -91,7 +98,7 @@ class NFTListApi(Resource):
                 )
                 total = NFTOrder.query.filter_by(**filters).count()
             except Exception as e:
-                logging.error(f"Get NFT Order Error: {e}")
+                current_app.logger.error(f"Get NFT Order Error: {e}")
                 return response.InternalServerError(
                     f"Get NFT Order From Address {address} Failed"
                 )
@@ -106,13 +113,14 @@ class NFTListApi(Resource):
                 orders.append(nft_order_dict)
 
             resp = {"total": total, "orders": orders}
+            current_app.logger.info(f"Get NFT Order By Address: {address}")
             return response.OK(None, resp)
         else:
             try:
                 items = NFTOrder.query.filter_by(**filters).all()
                 total = len(items)
             except Exception as e:
-                logging.error(f"Get NFT Order Error: {e}")
+                current_app.logger.error(f"Get NFT Order Error: {e}")
                 return response.InternalServerError(
                     f"Get NFT Order From Address {address} Failed"
                 )
@@ -128,26 +136,14 @@ class NFTListApi(Resource):
                 orders.append(nft_order_dict)
 
             resp = {"total": total, "orders": orders}
-            logging.info(f"Get NFT Order By Address: {address}")
             return response.OK(None, resp)
 
     @response.wrap_response
     @validator(POST_SCHEMA)
     def post(self):
         data = request.get_json(force=True)  # type: ignore
-
-        # if (
-        #     "order_gas_type" not in data
-        #     or "order_create_addr" not in data  # type: ignore
-        #     or "transactions" not in data  # type: ignore
-        #     or "trans_begin_time" not in data  # type: ignore
-        #     or "trans_end_time" not in data  # ta # type: ignore
-        # ):
-        #     return response.BadRequest("Required Feild Missing")
-
         address = data.get("order_create_addr")  # type: ignore
         transactions = data.get("transactions")  # type: ignore
-
         trans_begin_time = datetime.strptime(
             data.get("trans_begin_time"), "%Y-%m-%dT%H:%M:%S.%fZ"
         )  # type: ignore
@@ -173,23 +169,27 @@ class NFTListApi(Resource):
                 to_addr=t.get("to_addr"),
                 token_contract=t.get("token_contract"),
                 token_id=t.get("token_id"),
+                token_name=t.get("token_name"),
+                collection_name=t.get("collection_name"),
             )
             nft_order.transactions.append(txn)
 
         try:
             nft_order.save()
         except Exception as error:
-            print(error)
+            current_app.logger.error(f"Create NFT Order Error: {error}")
             return response.InternalServerError("Create NFT Order Failed")
 
         try:
             saved_nft_order = NFTOrder.query.get(nft_order.order_id)
         except Exception as error:
+            current_app.logger.error(f"Get After Create NFT Order Error: {error}")
             return response.InternalServerError(
                 f"Get NFT Order {nft_order.order_id} Error: {error}"
             )
 
         if not saved_nft_order:
+            current_app.logger.error(f"NFT Order {nft_order.order_id} Not Found")
             return response.NotFound(f"NFT Order {nft_order.order_id} Not Found")
 
         nft_order_dict = saved_nft_order.as_dict()
@@ -206,9 +206,11 @@ class NFTApi(Resource):
         try:
             nft_order = NFTOrder.query.get(id)
         except Exception as error:
+            current_app.logger.error(f"Get NFT Order {id} Error: {error}")
             return response.InternalServerError(f"Get NFT Order {id} Error: {error}")
 
         if not nft_order:
+            current_app.logger.error(f"NFT Order {id} Not Found")
             return response.NotFound(f"NFT Order {id} Not Found")
 
         nft_order_dict = nft_order.as_dict()
@@ -223,12 +225,15 @@ class NFTApi(Resource):
         try:
             nft_order = NFTOrder.query.get(id)
         except Exception as error:
+            current_app.logger.error(f"Get NFT Order {id} Error: {error}")
             return response.InternalServerError(f"Get NFT Order {id} Error: {error}")
         if not nft_order:
+            current_app.logger.error(f"NFT Order {id} Not Found")
             return response.NotFound(f"NFT Order {id} Not Found")
 
         data = request.get_json(force=True)  # type: ignore
         if not data:
+            current_app.logger.error("Required Data Missing")
             return response.BadRequest("Required Data Missing")
 
         try:
@@ -237,9 +242,10 @@ class NFTApi(Resource):
                 if key in nft_order_dict:
                     setattr(nft_order, key, value)
                 else:
-                    logging.warn(f"Undefined Feild: {key}")
+                    current_app.logger.warn(f"Undefined Feild: {key}")
             nft_order.update()
         except Exception as error:
+            current_app.logger.error(f"NFT Order {id} Update Failed, Error: {error}")
             return response.InternalServerError(
                 f"NFT Order {id} Update Failed, Error: {error}"
             )
@@ -250,13 +256,16 @@ class NFTApi(Resource):
         try:
             nft_order = NFTOrder.query.get(id)
         except Exception as error:
+            current_app.logger.error(f"Get NFT Order {id} Error: {error}")
             return response.InternalServerError(f"Get NFT Order {id} Error: {error}")
         if not nft_order:
+            current_app.logger.error(f"NFT Order {id} Not Found")
             return response.NotFound(f"NFT Order {id} Not Found")
 
         try:
             nft_order.delete()
         except Exception as error:
+            current_app.logger.error(f"Delete NFT Order {id} Error: {error}")
             return response.InternalServerError(f"Delete NFT Order {id} Error: {error}")
 
         return response.OK(f"NFT Order {id} Deleted", None)
