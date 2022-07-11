@@ -13,6 +13,7 @@ from common import response
 from common.validator import validator
 
 ORDER_CREATED = "Created"
+ORDER_CANCELED = "Canceled"
 
 POST_SCHEMA = {
     "type": "object",
@@ -63,14 +64,32 @@ POST_SCHEMA = {
     ],
 }
 
+UPDATE_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "action": {
+            "type": "string",
+            "enum": ["cancel_order"]
+        },
+        "data": {
+            "type": "object",
+        }
+    },
+    "required": ["action"]
+}
+
 
 class TokenListApi(Resource):
     def __init__(self):
         self.parser = reqparse.RequestParser()
-        self.parser.add_argument("page", type=int, required=False, location="args")
-        self.parser.add_argument("size", type=int, required=False, location="args")
-        self.parser.add_argument("address", type=str, required=False, location="args")
-        self.parser.add_argument("status", type=str, required=False, location="args")
+        self.parser.add_argument(
+            "page", type=int, required=False, location="args")
+        self.parser.add_argument(
+            "size", type=int, required=False, location="args")
+        self.parser.add_argument(
+            "address", type=str, required=False, location="args")
+        self.parser.add_argument(
+            "status", type=str, required=False, location="args")
 
     @response.wrap_response
     def get(self):
@@ -127,7 +146,6 @@ class TokenListApi(Resource):
 
             orders = list()
             for token_order in items:
-                print(token_order.transactions)
                 token_order_dict = token_order.as_dict()
                 trans_list = []
                 for item in token_order.transactions:
@@ -190,7 +208,8 @@ class TokenListApi(Resource):
             )
 
         if not saved_token_order:
-            current_app.logger.error(f"Token Order {token_order.order_id} Not Found")
+            current_app.logger.error(
+                f"Token Order {token_order.order_id} Not Found")
             return response.NotFound(f"Token Order {token_order.order_id} Not Found")
 
         token_order_dict = saved_token_order.as_dict()
@@ -223,6 +242,12 @@ class TokenApi(Resource):
 
     @response.wrap_response
     def put(self, id):
+        request_data = request.get_json(force=True)  # type: ignore
+        action = request_data.get("action")
+        data = request_data.get("data")
+        return self.dispatch(id, action, data)
+
+    def dispatch(self, id, action, data):
         try:
             token_order = TokenOrder.query.get(id)
         except Exception as error:
@@ -232,25 +257,29 @@ class TokenApi(Resource):
             current_app.logger.error(f"Token Order {id} Not Found")
             return response.NotFound(f"Token Order {id} Not Found")
 
-        data = request.get_json(force=True)  # type: ignore
-        if not data:
-            current_app.logger.error("Required Data Missing")
-            return response.BadRequest("Required Data Missing")
+        fn = getattr(self, action)
+        if not fn:
+            return response.NotFound(f"Action {action} Not Found")
 
+        return fn(token_order, data)
+
+    @validator(UPDATE_SCHEMA)
+    def cancel_order(self, token_order, *args, **kwargs):
         try:
             token_order_dict = token_order.as_dict()
-            for key, value in data.items():
-                if key in token_order_dict:
-                    setattr(token_order, key, value)
-                else:
-                    current_app.logger.warn(f"Undefined Feild: {key}")
+            if "order_status" in token_order_dict:
+                setattr(token_order, "order_status", ORDER_CANCELED)
+            else:
+                current_app.logger.warn("Undefined Feild")
+                return response.Forbidden("Undefined Feild")
             token_order.update()
         except Exception as error:
-            current_app.logger.error(f"Token Order {id} Update Failed, Error: {error}")
+            current_app.logger.error(
+                f"Token Order {id} Update Failed, Error: {error}")
             return response.InternalServerError(
-                f"Token Order {id} Update Failed, Error: {error}"
+                f"Token Order {token_order.order_id} Update Failed, Error: {error}"
             )
-        return response.OK(f"Token Order {id} Update Success", None)
+        return response.OK(f"Token Order {token_order.order_id} Update Success", None)
 
     @response.wrap_response
     def delete(self, id):
