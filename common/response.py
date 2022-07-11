@@ -45,6 +45,11 @@ class NotFound(Response):
         super(NotFound, self).__init__(404, message, None)
 
 
+class Forbidden(Response):
+    def __init__(self, message):
+        super(Forbidden, self).__init__(403, message, None)
+
+
 class Raw:
     def __init__(self, code, raw_data):
         if type(raw_data) == dict or type(raw_data) == list:

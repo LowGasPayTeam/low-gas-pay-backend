@@ -13,6 +13,7 @@ from common import response
 from common.validator import validator
 
 ORDER_CREATED = "Created"
+ORDER_CANCELED = "Canceled"
 
 POST_SCHEMA = {
     "type": "object",
@@ -64,14 +65,32 @@ POST_SCHEMA = {
     ],
 }
 
+UPDATE_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "action": {
+            "type": "string",
+            "enum": ["cancel_order"]
+        },
+        "data": {
+            "type": "object",
+        }
+    },
+    "required": ["action"]
+}
+
 
 class NFTListApi(Resource):
     def __init__(self):
         self.parser = reqparse.RequestParser()
-        self.parser.add_argument("page", type=int, required=False, location="args")
-        self.parser.add_argument("size", type=int, required=False, location="args")
-        self.parser.add_argument("address", type=str, required=False, location="args")
-        self.parser.add_argument("status", type=str, required=False, location="args")
+        self.parser.add_argument(
+            "page", type=int, required=False, location="args")
+        self.parser.add_argument(
+            "size", type=int, required=False, location="args")
+        self.parser.add_argument(
+            "address", type=str, required=False, location="args")
+        self.parser.add_argument(
+            "status", type=str, required=False, location="args")
 
     @response.wrap_response
     def get(self):
@@ -183,13 +202,15 @@ class NFTListApi(Resource):
         try:
             saved_nft_order = NFTOrder.query.get(nft_order.order_id)
         except Exception as error:
-            current_app.logger.error(f"Get After Create NFT Order Error: {error}")
+            current_app.logger.error(
+                f"Get After Create NFT Order Error: {error}")
             return response.InternalServerError(
                 f"Get NFT Order {nft_order.order_id} Error: {error}"
             )
 
         if not saved_nft_order:
-            current_app.logger.error(f"NFT Order {nft_order.order_id} Not Found")
+            current_app.logger.error(
+                f"NFT Order {nft_order.order_id} Not Found")
             return response.NotFound(f"NFT Order {nft_order.order_id} Not Found")
 
         nft_order_dict = saved_nft_order.as_dict()
@@ -222,6 +243,12 @@ class NFTApi(Resource):
 
     @response.wrap_response
     def put(self, id):
+        request_data = request.get_json(force=True)  # type: ignore
+        action = request_data.get("action")
+        data = request_data.get("data")
+        return self.dispatch(id, action, data)
+
+    def dispatch(self, id, action, data):
         try:
             nft_order = NFTOrder.query.get(id)
         except Exception as error:
@@ -231,25 +258,29 @@ class NFTApi(Resource):
             current_app.logger.error(f"NFT Order {id} Not Found")
             return response.NotFound(f"NFT Order {id} Not Found")
 
-        data = request.get_json(force=True)  # type: ignore
-        if not data:
-            current_app.logger.error("Required Data Missing")
-            return response.BadRequest("Required Data Missing")
+        fn = getattr(self, action)
+        if not fn:
+            return response.NotFound(f"Action {action} Not Found")
 
+        return fn(nft_order, data)
+
+    @validator(UPDATE_SCHEMA)
+    def cancel_order(self, nft_order, *args, **kwargs):
         try:
             nft_order_dict = nft_order.as_dict()
-            for key, value in data.items():
-                if key in nft_order_dict:
-                    setattr(nft_order, key, value)
-                else:
-                    current_app.logger.warn(f"Undefined Feild: {key}")
+            if "order_status" in nft_order_dict:
+                setattr(nft_order, "order_status", ORDER_CANCELED)
+            else:
+                current_app.logger.warn("Undefined Feild")
+                return response.Forbidden("Undefined Feild")
             nft_order.update()
         except Exception as error:
-            current_app.logger.error(f"NFT Order {id} Update Failed, Error: {error}")
+            current_app.logger.error(
+                f"Token Order {id} Update Failed, Error: {error}")
             return response.InternalServerError(
-                f"NFT Order {id} Update Failed, Error: {error}"
+                f"Token Order {nft_order.order_id} Update Failed, Error: {error}"
             )
-        return response.OK(f"NFT Order {id} Update Success", None)
+        return response.OK(f"Token Order {nft_order.order_id} Update Success", None)
 
     @response.wrap_response
     def delete(self, id):
